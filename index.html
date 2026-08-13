@@ -240,6 +240,16 @@ reflections:[],vault:[
 {site:'蝦皮購物',account:'yolanda_88'},
 {site:'Email',account:'yolanda.work@gmail.com'}],scripts:[]};
 let data=JSON.parse(localStorage.getItem(KEY)||'null')||defaults;
+
+data.learning.forEach(x=>{
+  if(x.items?.length && typeof x.items[0]==='string'){
+    const doneCount=Math.round((x.progress||0)/100*x.items.length);
+    x.items=x.items.map((text,i)=>({
+      text,
+      done:i<doneCount
+    }));
+  }
+});
 data.learning.forEach(x=>{
   if(!x.checked){
     const count=Math.round((x.progress||0)/100*(x.items?.length||0));
