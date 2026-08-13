@@ -167,7 +167,17 @@ opacity:0;transform:translateY(10px);transition:.25s;z-index:100}.toast.show{opa
   </div>
   <div class="panel"><img class="cover" src="camera.jpeg" alt="camera.jpeg"><h2>YouTube Studio <small>view all</small></h2><div id="homeVideos" class="list"></div><button class="add" onclick="openModal('video')">＋ New Video Idea</button></div>
   <div class="panel"><img class="cover" src="dinner.jpeg" alt="dinner.jpeg"><h2>Recipe Atelier <small>view all</small></h2><div id="homeRecipes" class="list"></div><button class="add" onclick="openModal('recipe')">＋ New Recipe</button></div>
-  <div class="panel calendar"><h2>Today’s Schedule <small id="scheduleDate"></small></h2><div id="schedule" class="schedule"></div><button class="add" onclick="openModal('task')">＋ Add Event</button></div>
+  <div class="panel calendar"><div class="panel calendar">
+  <h2>Today’s Schedule <small id="scheduleDate"></small></h2>
+  <div id="schedule" class="schedule"></div>
+  <button class="add" onclick="openModal('task')">＋ Add Event</button>
+</div>
+
+<div class="panel weekly-home">
+  <h2>Weekly Plan</h2>
+  <div class="week" id="weekMini"></div>
+  <button class="add" onclick="showPage('weekly')">＋ Edit Weekly Plan</button>
+</div><h2>Today’s Schedule <small id="scheduleDate"></small></h2><div id="schedule" class="schedule"></div><button class="add" onclick="openModal('task')">＋ Add Event</button></div>
  </div>
  <div class="bottom"><div class="panel mini"><h2>Weekly Plan</h2><div class="week" id="weekMini"></div><button class="add" onclick="showPage('weekly')">＋ Edit Weekly Plan</button></div>
   
