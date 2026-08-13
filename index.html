@@ -53,11 +53,12 @@ box-shadow:var(--shadow)}.hero-image{
   border-radius:12px;
 }
 .hero:after{content:"❦";position:absolute;right:27px;bottom:7px;color:#9a6a55;font-size:48px;transform:rotate(-12deg)}
-.hero h1{font:36 40px/1.05 "Cormorant Garamond",serif;margin:5px 0 3px;max-width:650px}.hero-image{
-  width:1920px;
-  height:600px;
+.hero h1{font:36 40px/1.05 "Cormorant Garamond",serif;margin:5px 0 3px;max-width:650px}
+.hero-image{
+  width:100%;
+  height:300px;
   object-fit:cover;
-  vertical-align:middle;
+  display:block;
   border-radius:12px;
 }
 .hero p{font:17px "Cormorant Garamond",serif;margin:0;color:#5d4b3d}
@@ -146,7 +147,8 @@ opacity:0;transform:translateY(10px);transition:.25s;z-index:100}.toast.show{opa
   <div><div class="greeting">Good afternoon, Yolanda ☁️</div><div class="sub">Your little corner of the internet, where plans become things.</div></div>
   <div class="toolbar"><button class="btn" onclick="openModal('task')">＋ Quick Task</button><button class="btn primary" onclick="quickAdd()">＋ Create</button></div>
  </div>
- <div class="hero"><h1><img src="venus.jpeg" class="hero-image">“You are the artist of your life.”</h1><p>Don’t hand the paintbrush to anyone else.</p>
+ <div class="hero"><img src="venus.jpeg" class="hero-image">
+<h1>“You are the artist of your life.”</h1><p>Don’t hand the paintbrush to anyone else.</p>
   <div class="datecard"><small>Today is</small><strong id="today"></strong><small id="weekday"></small></div>
  </div>
  <div class="grid5">
