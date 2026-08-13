@@ -84,7 +84,7 @@ text-align:center;transform:rotate(1.5deg);box-shadow:var(--shadow)}
 }
 .time{color:#8c7a67}.event{padding:7px 10px;border-radius:8px;background:#ead4ca;border-left:4px solid var(--wine)}
 .event.green{background:#dfe8d7;border-left-color:var(--green)}.event.gold{background:#efe0bd;border-left-color:var(--gold)}
-.bottom{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px;margin-top:10px;width:100%}.mini{min-height:210px;min-width:0}
+.bottom{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:10px;width:100%}.mini{min-height:210px;min-width:0}
 .week{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;font-size:10px}.week div{padding:6px 2px;border:1px solid #e0d1bb;text-align:center;min-height:33px}
 .week .head{background:#eee2cf;font-weight:600;min-height:auto}
 .page{display:none}.page.active{display:block}
@@ -107,7 +107,7 @@ border-radius:17px;padding:22px;box-shadow:0 25px 80px rgba(20,12,8,.3)}
 opacity:0;transform:translateY(10px);transition:.25s;z-index:100}.toast.show{opacity:1;transform:translateY(0)}
 .cover{width:100%;height:150px;object-fit:cover;border-radius:10px;background:#e3d1b5;display:block;margin-bottom:12px}
 .recipe-emoji{height:150px;font-size:60px;display:grid;place-items:center;background:#eadbc3;border-radius:10px;margin-bottom:12px}
-@media(max-width:1200px){.grid5{grid-template-columns:repeat(3,1fr)}.grid{grid-template-columns:1fr 1fr}.calendar{grid-column:span 2}.bottom{grid-template-columns:repeat(2,1fr)}.cards{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:1200px){.grid5{grid-template-columns:repeat(3,1fr)}.grid{grid-template-columns:1fr 1fr}.calendar{grid-column:span 2}.cards{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:800px){
  .sidebar{position:relative;width:100%;height:auto;border-right:0;border-bottom:1px solid #d7c8b1;padding:18px 12px}
  .app{display:block}.main{margin-left:0;width:100%;padding:15px}
@@ -176,7 +176,7 @@ opacity:0;transform:translateY(10px);transition:.25s;z-index:100}.toast.show{opa
   <button class="add" onclick="showPage('weekly')">＋ Edit Weekly Plan</button>
 </div><h2>Today’s Schedule <small id="scheduleDate"></small></h2><div id="schedule" class="schedule"></div><button class="add" onclick="openModal('task')">＋ Add Event</button></div>
  </div>
- <div class="bottom"><div class="panel mini"><h2>Weekly Plan</h2><div class="week" id="weekMini"></div><button class="add" onclick="showPage('weekly')">＋ Edit Weekly Plan</button></div>
+ 
   
   <div class="panel mini"><h2>Wishlist</h2><div id="homeWish" class="list"></div><button class="add" onclick="openModal('wish')">＋ Add Wishlist Item</button></div>
   <div class="panel mini"><h2>Travel Journal</h2><div class="quote" style="margin:0">Osaka<br><small>5 Days Trip</small></div><div class="sub" style="margin-top:8px">2026.06.15 → 06.19</div><button class="add" onclick="showPage('travel')">＋ New Trip</button></div>
