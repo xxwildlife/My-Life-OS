@@ -10,6 +10,20 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Noto+Serif+TC:wght@400;500;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
 <style>
+ .editable{
+  cursor:text;
+  outline:none;
+  border-radius:4px;
+}
+
+.editable:hover{
+  background:#f4eadb;
+}
+
+.editable:focus{
+  background:#fffaf0;
+  box-shadow:0 0 0 2px #e3d0b5;
+}
 :root{
  --paper:#f5eddd;--paper2:#fffaf0;--ink:#3d3027;--muted:#786a5c;
  --wine:#8d4f43;--green:#66775e;--gold:#b38b57;--line:#d8c8ae;
@@ -285,32 +299,47 @@ homeVault.innerHTML=data.vault.slice(0,5).map(x=>`<div class="row"><span>◉</sp
 let sched=data.tasks.map(x=>`<span class="time">${esc(x.time)}</span><div class="event ${x.kind==='green'?'green':''} ${x.kind==='gold'?'gold':''}">${esc(x.title)}</div>`).join('');
 schedule.innerHTML=sched;plannerSchedule.innerHTML=sched;
 taskList.innerHTML=data.tasks.map((x,i)=>`<label class="check"><input type="checkbox" ${x.done?'checked':''} onchange="toggleTask(${i})"><span>${esc(x.title)} <small>${esc(x.time)}</small></span></label>`).join('');
-learningCards.innerHTML=data.learning.map((x,i)=>{
-  const progress=calcProgress(x);
-  return `<div class="card">
-    <h3 contenteditable="true"
-        onblur="editLearning(${i},'title',this.innerText)"
-        onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}">${esc(x.title)}</h3>
+learningCards.innerHTML=data.learning.map((x,i)=>`
+<div class="card">
+  <h3 contenteditable="true"
+      class="editable"
+      onblur="editLearning(${i},'title',this.innerText)"
+      onkeydown="finishEdit(event,this)">
+      ${esc(x.title)}
+  </h3>
 
-    <p contenteditable="true"
-       onblur="editLearning(${i},'goal',this.innerText)">${esc(x.goal)}</p>
+  <p contenteditable="true"
+     class="editable"
+     onblur="editLearning(${i},'goal',this.innerText)"
+     onkeydown="finishEdit(event,this)">
+     ${esc(x.goal)}
+  </p>
 
-    <div class="sub">Estimated ${x.hours} hours · <span id="learning-progress-${i}">${progress}%</span> complete</div>
+  <div class="sub">
+    Estimated ${x.hours} hours · <span id="progressText-${i}">${x.progress}%</span> complete
+  </div>
 
-    <div class="bar">
-      <i id="learning-bar-${i}" style="width:${progress}%"></i>
-    </div>
+  <div class="bar">
+    <i id="progressBar-${i}" style="width:${x.progress}%"></i>
+  </div>
 
-    ${(x.items||[]).map((it,j)=>`
-      <label class="check">
-        <input type="checkbox"
-          ${x.checked?.[j]?'checked':''}
-          onchange="toggleLearningItem(${i},${j})">
-        <span contenteditable="true"
-          onblur="editLearningItem(${i},${j},this.innerText)"
-          onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}">${esc(it)}</span>
-      </label>
-    `).join('')}
+  ${(x.items||[]).map((it,j)=>`
+    <label class="check">
+      <input
+        type="checkbox"
+        ${it.done?'checked':''}
+        onchange="toggleLearningItem(${i},${j},this.checked)"
+      >
+      <span
+        contenteditable="true"
+        class="editable"
+        onblur="editLearningItem(${i},${j},this.innerText)"
+        onkeydown="finishEdit(event,this)"
+      >${esc(it.text)}</span>
+    </label>
+  `).join('')}
+</div>
+`).join('');
   </div>`;
 }).join('');
 videoCards.innerHTML=data.videos.map((x,i)=>`<div class="card"><div class="recipe-emoji">🎬</div><h3>${esc(x.title)}</h3><p>${esc(x.type)} · ${esc(x.length)}</p><span class="tag">${esc(x.status)}</span><div class="actions"><button class="btn" onclick="openModal('script','${esc(x.title)}')">Script</button><button class="btn" onclick="del('videos',${i})">Delete</button></div></div>`).join('');
@@ -321,7 +350,75 @@ reflectionCards.innerHTML=(data.reflections.length?data.reflections:[{month:'Aug
 scriptArchive.innerHTML=data.scripts.length?data.scripts.map((x,i)=>`<div class="row"><div style="flex:1"><b>${esc(x.title)}</b><div class="meta">${esc(x.content).slice(0,100)}</div></div><button class="btn" onclick="del('scripts',${i})">Delete</button></div>`).join(''):'<div class="empty">No scripts yet. Your future masterpiece is suspiciously empty.</div>';
 renderWeek()
 }
-function renderWeek(){let days=['MON','TUE','WED','THU','FRI','SAT','SUN'],h=days.map(x=>`<div class="head">${x}</div>`).join('');for(let r=0;r<5;r++)for(let c=0;c<7;c++)h+=`<div>${r===0&&c===2?'✓':r===1&&c===3?'✓':r===2&&c===5?'✓':''}</div>`;weekMini.innerHTML=h;weekLarge.innerHTML=h}
+function finishEdit(e,el){
+  if(e.key==='Enter'){
+    e.preventDefault();
+    el.blur();
+  }
+}
+
+function editLearning(index,field,value){
+  data.learning[index][field]=value.trim();
+  localStorage.setItem(KEY,JSON.stringify(data));
+  updateLearningProgress(index);
+}
+
+function editLearningItem(index,itemIndex,value){
+  data.learning[index].items[itemIndex].text=value.trim();
+  localStorage.setItem(KEY,JSON.stringify(data));
+}
+
+function toggleLearningItem(index,itemIndex,checked){
+  data.learning[index].items[itemIndex].done=checked;
+  updateLearningProgress(index);
+}
+
+function updateLearningProgress(index){
+  const learning=data.learning[index];
+  const items=learning.items||[];
+
+  const done=items.filter(x=>x.done).length;
+  const progress=items.length
+    ? Math.round(done/items.length*100)
+    : 0;
+
+  learning.progress=progress;
+
+  localStorage.setItem(KEY,JSON.stringify(data));
+
+  const bar=document.getElementById(`progressBar-${index}`);
+  const text=document.getElementById(`progressText-${index}`);
+
+  if(bar) bar.style.width=progress+'%';
+  if(text) text.textContent=progress+'%';
+
+  updateHomeLearning(index);
+}
+
+function updateHomeLearning(){
+  homeLearning.innerHTML=data.learning.slice(0,6).map(x=>`
+    <div class="row">
+      <span>▢</span>
+      <div style="flex:1">
+        ${esc(x.title)}
+        <div class="progress">
+          <i style="width:${x.progress}%"></i>
+        </div>
+      </div>
+      <span class="meta">${x.progress}%</span>
+    </div>
+  `).join('');
+
+  const avg=data.learning.length
+    ? Math.round(
+        data.learning.reduce((a,x)=>a+x.progress,0)
+        /data.learning.length
+      )
+    : 0;
+
+  goalBar.style.width=avg+'%';
+}
+ function renderWeek(){let days=['MON','TUE','WED','THU','FRI','SAT','SUN'],h=days.map(x=>`<div class="head">${x}</div>`).join('');for(let r=0;r<5;r++)for(let c=0;c<7;c++)h+=`<div>${r===0&&c===2?'✓':r===1&&c===3?'✓':r===2&&c===5?'✓':''}</div>`;weekMini.innerHTML=h;weekLarge.innerHTML=h}
 function toggleTask(i){data.tasks[i].done=!data.tasks[i].done;save()}
 function calcProgress(x){
   const items=x.items||[];
@@ -366,7 +463,25 @@ vault:`<h2>Personal Vault 🔐</h2><div class="field"><label>Service</label><inp
 script:`<h2>Script ✍️</h2><div class="field"><label>Title</label><input id="f1" value="${esc(prefill)}"></div><div class="field" style="margin-top:10px"><label>Script</label><textarea id="f2" style="min-height:260px"></textarea></div><div class="actions"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="addScript()">Save Script</button></div>`};
 modal.innerHTML=f[type];modalBack.classList.add('show')
 }
-function addLearning(){data.learning.push({title:val('f1')||'Untitled Goal',hours:+val('f2')||0,goal:val('f3'),progress:+val('f5')||0,items:val('f4').split(/\r?\n/).filter(Boolean)});closeModal();save()}
+function addLearning(){
+  const progress=+val('f5')||0;
+  const rawItems=val('f4').split(/\r?\n/).filter(Boolean);
+  const doneCount=Math.round(progress/100*rawItems.length);
+
+  data.learning.push({
+    title:val('f1')||'Untitled Goal',
+    hours:+val('f2')||0,
+    goal:val('f3'),
+    progress,
+    items:rawItems.map((text,i)=>({
+      text,
+      done:i<doneCount
+    }))
+  });
+
+  closeModal();
+  save();
+}
 function addVideo(){data.videos.push({title:val('f1')||'Untitled Video',type:val('f2'),length:val('f3'),status:'Idea',location:val('f4'),concept:val('f5')});closeModal();save()}
 function addRecipe(){data.recipes.push({title:val('f1')||'Untitled Recipe',time:val('f3'),rating:val('f4'),image:val('f5'),ingredients:val('f6'),steps:val('f7'),emoji:val('f8')||'🍴',notes:val('f9')});closeModal();save()}
 function addTask(){data.tasks.push({title:val('f1')||'Untitled Task',time:val('f2'),kind:val('f3'),done:false});data.tasks.sort((a,b)=>a.time.localeCompare(b.time));closeModal();save()}
