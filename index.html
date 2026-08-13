@@ -257,7 +257,34 @@ homeVault.innerHTML=data.vault.slice(0,5).map(x=>`<div class="row"><span>◉</sp
 let sched=data.tasks.map(x=>`<span class="time">${esc(x.time)}</span><div class="event ${x.kind==='green'?'green':''} ${x.kind==='gold'?'gold':''}">${esc(x.title)}</div>`).join('');
 schedule.innerHTML=sched;plannerSchedule.innerHTML=sched;
 taskList.innerHTML=data.tasks.map((x,i)=>`<label class="check"><input type="checkbox" ${x.done?'checked':''} onchange="toggleTask(${i})"><span>${esc(x.title)} <small>${esc(x.time)}</small></span></label>`).join('');
-learningCards.innerHTML=data.learning.map((x,i)=>`<div class="card"><h3>${esc(x.title)}</h3><p>${esc(x.goal)}</p><div class="sub">Estimated ${x.hours} hours · ${x.progress}% complete</div><div class="bar"><i style="width:${x.progress}%"></i></div>${(x.items||[]).map(it=>`<label class="check"><input type="checkbox"><span>${esc(it)}</span></label>`).join('')}<div class="actions"><button class="btn" onclick="del('learning',${i})">Delete</button></div></div>`).join('');
+learningCards.innerHTML=data.learning.map((x,i)=>{
+  const progress=calcProgress(x);
+  return `<div class="card">
+    <h3 contenteditable="true"
+        onblur="editLearning(${i},'title',this.innerText)"
+        onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}">${esc(x.title)}</h3>
+
+    <p contenteditable="true"
+       onblur="editLearning(${i},'goal',this.innerText)">${esc(x.goal)}</p>
+
+    <div class="sub">Estimated ${x.hours} hours · <span id="learning-progress-${i}">${progress}%</span> complete</div>
+
+    <div class="bar">
+      <i id="learning-bar-${i}" style="width:${progress}%"></i>
+    </div>
+
+    ${(x.items||[]).map((it,j)=>`
+      <label class="check">
+        <input type="checkbox"
+          ${x.checked?.[j]?'checked':''}
+          onchange="toggleLearningItem(${i},${j})">
+        <span contenteditable="true"
+          onblur="editLearningItem(${i},${j},this.innerText)"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}">${esc(it)}</span>
+      </label>
+    `).join('')}
+  </div>`;
+}).join('');
 videoCards.innerHTML=data.videos.map((x,i)=>`<div class="card"><div class="recipe-emoji">🎬</div><h3>${esc(x.title)}</h3><p>${esc(x.type)} · ${esc(x.length)}</p><span class="tag">${esc(x.status)}</span><div class="actions"><button class="btn" onclick="openModal('script','${esc(x.title)}')">Script</button><button class="btn" onclick="del('videos',${i})">Delete</button></div></div>`).join('');
 recipeCards.innerHTML=data.recipes.map((x,i)=>`<div class="card">${x.image?`<img class="cover" src="${esc(x.image)}" alt="${esc(x.title)}" onerror="this.outerHTML='<div class=recipe-emoji>${x.emoji||'🍴'}</div>'">`:`<div class="recipe-emoji">${x.emoji||'🍴'}</div>`}<h3>${esc(x.title)}</h3><p>${x.rating||'☆☆☆☆☆'} · ${esc(x.time)}</p><p>${esc(x.notes||'A recipe waiting to become a regular.')}</p><div class="actions"><button class="btn" onclick="del('recipes',${i})">Delete</button></div></div>`).join('');
 wishCards.innerHTML=data.wishes.map((x,i)=>`<div class="card"><div style="font-size:55px">${x.emoji}</div><h3>${esc(x.title)}</h3><p>${esc(x.price)}</p><span class="tag">Wishlist</span><div class="actions"><button class="btn" onclick="del('wishes',${i})">Delete</button></div></div>`).join('');
