@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -11,9 +9,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Noto+Serif+TC:wght@400;500;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
 <style>
 :root{
- --paper:#f5eddd;--paper2:#fffaf0;--ink:#3d3027;--muted:#786a5c;
- --wine:#8d4f43;--green:#66775e;--gold:#b38b57;--line:#d8c8ae;
- --shadow:0 8px 25px rgba(69,48,31,.11)
+ --paper:#f5eddd;--paper2:#fffaf0;--ink:#3d3027;--muted:#786a5c;
+ --wine:#8d4f43;--green:#66775e;--gold:#b38b57;--line:#d8c8ae;
+ --shadow:0 8px 25px rgba(69,48,31,.11)
 }
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;background:#e8dcc6;color:var(--ink)}
@@ -47,19 +45,19 @@ box-shadow:0 2px 8px rgba(60,40,20,.05)}
 .hero{min-height:100px;padding:24px 28px;position:relative;overflow:hidden;border:1px solid #d5c2a5;border-radius:18px;
 background:linear-gradient(90deg,rgba(255,248,233,.97) 0 56%,rgba(241,224,197,.84)),linear-gradient(145deg,#e5d0ae,#f9f0df);
 box-shadow:var(--shadow)}.hero-image{
-  width:500px;
-  height:80px;
-  object-fit:cover;
-  border-radius:12px;
+  width:500px;
+  height:80px;
+  object-fit:cover;
+  border-radius:12px;
 }
 .hero:after{content:"❦";position:absolute;right:27px;bottom:7px;color:#9a6a55;font-size:48px;transform:rotate(-12deg)}
 .hero h1{font:36 40px/1.05 "Cormorant Garamond",serif;margin:5px 0 3px;max-width:650px}
 .hero-image{
-  width:100%;
-  height:300px;
-  object-fit:cover;
-  display:block;
-  border-radius:12px;
+  width:100%;
+  height:300px;
+  object-fit:cover;
+  display:block;
+  border-radius:12px;
 }
 .hero p{font:17px "Cormorant Garamond",serif;margin:0;color:#5d4b3d}
 .datecard{position:absolute;right:55px;top:25px;background:#fff9ed;border:1px solid #d5c3a9;padding:12px 25px;
@@ -80,33 +78,11 @@ text-align:center;transform:rotate(1.5deg);box-shadow:var(--shadow)}
 .tag{margin-left:auto;font-size:10px;padding:4px 7px;border-radius:9px;background:#eadfd0;white-space:nowrap}
 .add{width:100%;margin-top:10px;border:1px dashed #c8b79b;background:#faf2e3;padding:8px;border-radius:9px;color:#6e5b49}
 .calendar{grid-column:span 2}.schedule{display:grid;grid-template-columns:42px 1fr;gap:7px;font-size:12px}.weekly-home{
-  grid-column:span 2;
+  grid-column:span 2;
 }
 .time{color:#8c7a67}.event{padding:7px 10px;border-radius:8px;background:#ead4ca;border-left:4px solid var(--wine)}
 .event.green{background:#dfe8d7;border-left-color:var(--green)}.event.gold{background:#efe0bd;border-left-color:var(--gold)}
-.bottom{
-  display:grid;
-  grid-template-columns:repeat(4, 1fr);
-  gap:12px;
-  margin-top:12px;
-  align-items:stretch;   /* 關鍵：讓四張卡片等高 */
-}
-
-.bottom .panel{
-  display:flex;
-  flex-direction:column;
-  min-height:280px;      /* 統一最小高度 */
-  height:100%;
-}
-
-.bottom .panel .list,
-.bottom .panel .quote{
-  flex:1;                /* 讓內容區自動撐開 */
-}
-
-.bottom .panel .add{
-  margin-top:auto;       /* 按鈕永遠貼在底部 */
-}
+.bottom{display:grid;grid-t.bottom{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:10px;align-items:start}emplate-columns:repeat(5,1fr);gap:10px;margin-top:10px;align-items:start}
 .week{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;font-size:10px}.week div{padding:6px 2px;border:1px solid #e0d1bb;text-align:center;min-height:33px}
 .week .head{background:#eee2cf;font-weight:600;min-height:auto}
 .page{display:none}.page.active{display:block}
@@ -131,99 +107,89 @@ opacity:0;transform:translateY(10px);transition:.25s;z-index:100}.toast.show{opa
 .recipe-emoji{height:150px;font-size:60px;display:grid;place-items:center;background:#eadbc3;border-radius:10px;margin-bottom:12px}
 @media(max-width:1200px){.grid5{grid-template-columns:repeat(3,1fr)}.grid{grid-template-columns:1fr 1fr}.calendar{grid-column:span 2}.bottom{grid-template-columns:repeat(2,1fr)}.cards{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:800px){
- .sidebar{position:relative;width:100%;height:auto;border-right:0;border-bottom:1px solid #d7c8b1;padding:18px 12px}
- .app{display:block}.main{margin-left:0;width:100%;padding:15px}
- .nav{grid-template-columns:repeat(2,1fr);margin-top:18px}.quote{display:none}
- .top,.section-head{align-items:flex-start;flex-direction:column}.toolbar{width:100%}.toolbar .btn{flex:1}
- .hero{min-height:260px;padding:20px}.hero h1{font-size:36px;max-width:100%}
- .datecard{position:relative;right:auto;top:auto;display:inline-block;margin-top:24px}
- .grid5,.grid,.bottom,.cards{grid-template-columns:1fr}.calendar{grid-column:auto}
- .formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}
- .section-head h1{font-size:34px}.board{min-height:600px;overflow:auto}
+ .sidebar{position:relative;width:100%;height:auto;border-right:0;border-bottom:1px solid #d7c8b1;padding:18px 12px}
+ .app{display:block}.main{margin-left:0;width:100%;padding:15px}
+ .nav{grid-template-columns:repeat(2,1fr);margin-top:18px}.quote{display:none}
+ .top,.section-head{align-items:flex-start;flex-direction:column}.toolbar{width:100%}.toolbar .btn{flex:1}
+ .hero{min-height:260px;padding:20px}.hero h1{font-size:36px;max-width:100%}
+ .datecard{position:relative;right:auto;top:auto;display:inline-block;margin-top:24px}
+ .grid5,.grid,.bottom,.cards{grid-template-columns:1fr}.calendar{grid-column:auto}
+ .formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}
+ .section-head h1{font-size:34px}.board{min-height:600px;overflow:auto}
 }
 </style>
 </head>
 <body>
 <div class="app">
 <aside class="sidebar">
- <div class="brand">My Life OS<small>✿ by Yolanda</small></div>
- <nav class="nav">
-  <button class="active" data-page="home"><span class="ico">⌂</span>Home</button>
-  <button data-page="learning"><span class="ico">♧</span>Learning Library</button>
-  <button data-page="youtube"><span class="ico">▣</span>YouTube Studio</button>
-  <button data-page="recipes"><span class="ico">♨</span>Recipe Atelier</button>
-  <button data-page="planner"><span class="ico">▦</span>Calendar & To-do</button>
-  <button data-page="weekly"><span class="ico">☷</span>Weekly Plan</button>
-  <button data-page="wishlist"><span class="ico">♡</span>Wishlist</button>
-  <button data-page="travel"><span class="ico">◇</span>Travel Journal</button>
-  <button data-page="reflection"><span class="ico">☾</span>Monthly Reflection</button>
-  <button data-page="vault"><span class="ico">▣</span>Personal Vault</button>
-  <button data-page="canvas"><span class="ico">✎</span>My Canvas</button>
- </nav>
- <div class="quote">“I am going to make everything around me beautiful — that will be my life.”
-  <span>— Elsie de Wolfe</span>
- </div>
+ <div class="brand">My Life OS<small>✿ by Yolanda</small></div>
+ <nav class="nav">
+  <button class="active" data-page="home"><span class="ico">⌂</span>Home</button>
+  <button data-page="learning"><span class="ico">♧</span>Learning Library</button>
+  <button data-page="youtube"><span class="ico">▣</span>YouTube Studio</button>
+  <button data-page="recipes"><span class="ico">♨</span>Recipe Atelier</button>
+  <button data-page="planner"><span class="ico">▦</span>Calendar & To-do</button>
+  <button data-page="weekly"><span class="ico">☷</span>Weekly Plan</button>
+  <button data-page="wishlist"><span class="ico">♡</span>Wishlist</button>
+  <button data-page="travel"><span class="ico">◇</span>Travel Journal</button>
+  <button data-page="reflection"><span class="ico">☾</span>Monthly Reflection</button>
+  <button data-page="vault"><span class="ico">▣</span>Personal Vault</button>
+  <button data-page="canvas"><span class="ico">✎</span>My Canvas</button>
+ </nav>
+ <div class="quote">“I am going to make everything around me beautiful — that will be my life.”
+  <span>— Elsie de Wolfe</span>
+ </div>
 </aside>
-
 <main class="main">
 <section id="home" class="page active">
- <div class="top">
-  <div><div class="greeting">Good afternoon, Yolanda ☁️</div><div class="sub">Your little corner of the internet, where plans become things.</div></div>
-  <div class="toolbar"><button class="btn" onclick="openModal('task')">＋ Quick Task</button><button class="btn primary" onclick="quickAdd()">＋ Create</button></div>
- </div>
- <div class="hero"><img src="venus.jpeg" class="hero-image">
+ <div class="top">
+  <div><div class="greeting">Good afternoon, Yolanda ☁️</div><div class="sub">Your little corner of the internet, where plans become things.</div></div>
+  <div class="toolbar"><button class="btn" onclick="openModal('task')">＋ Quick Task</button><button class="btn primary" onclick="quickAdd()">＋ Create</button></div>
+ </div>
+ <div class="hero"><img src="venus.jpeg" class="hero-image">
 <h1>“You are the artist of your life.”</h1><p>Stop Waiting For Friday.</p>
-  <div class="datecard"><small>Today is</small><strong id="today"></strong><small id="weekday"></small></div>
- </div>
- <div class="grid5">
-  <div class="stat"><div class="label">📚 Learning Progress</div><div class="num" id="statGoals">0</div><div class="sub">goals</div><div class="progress"><i id="goalBar"></i></div></div>
-  <div class="stat"><div class="label">🎥 YouTube Ideas</div><div class="num" id="statVideos">0</div><div class="sub">ideas</div></div>
-  <div class="stat"><div class="label">🍝 Recipes Collected</div><div class="num" id="statRecipes">0</div><div class="sub">recipes</div></div>
-  <div class="stat"><div class="label">☑ Tasks Today</div><div class="num" id="statTasks">0</div><div class="sub">tasks</div></div>
-  <div class="stat"><div class="label">🗓 This Month</div><div class="num" id="statEvents">0</div><div class="sub">events</div></div>
- </div>
- <div class="grid">
-  <div class="panel">
-   <img class="cover" src="main-image.jpeg" alt="Life OS collage" onerror="this.style.display='none'">
-   <h2>Learning Library <small>view all</small></h2><div id="homeLearning" class="list"></div><button class="add" onclick="openModal('learning')">＋ New Goal</button>
-  </div>
-  <div class="panel"><img class="cover" src="camera.jpeg" alt="camera.jpeg"><h2>YouTube Studio <small>view all</small></h2><div id="homeVideos" class="list"></div><button class="add" onclick="openModal('video')">＋ New Video Idea</button></div>
-  <div class="panel"><img class="cover" src="dinner.jpeg" alt="dinner.jpeg"><h2>Recipe Atelier <small>view all</small></h2><div id="homeRecipes" class="list"></div><button class="add" onclick="openModal('recipe')">＋ New Recipe</button></div>
+  <div class="datecard"><small>Today is</small><strong id="today"></strong><small id="weekday"></small></div>
+ </div>
+ <div class="grid5">
+  <div class="stat"><div class="label">📚 Learning Progress</div><div class="num" id="statGoals">0</div><div class="sub">goals</div><div class="progress"><i id="goalBar"></i></div></div>
+  <div class="stat"><div class="label">🎥 YouTube Ideas</div><div class="num" id="statVideos">0</div><div class="sub">ideas</div></div>
+  <div class="stat"><div class="label">🍝 Recipes Collected</div><div class="num" id="statRecipes">0</div><div class="sub">recipes</div></div>
+  <div class="stat"><div class="label">☑ Tasks Today</div><div class="num" id="statTasks">0</div><div class="sub">tasks</div></div>
+  <div class="stat"><div class="label">🗓 This Month</div><div class="num" id="statEvents">0</div><div class="sub">events</div></div>
+ </div>
+ <div class="grid">
+  <div class="panel">
+   <img class="cover" src="main-image.jpeg" alt="Life OS collage" onerror="this.style.display='none'">
+   <h2>Learning Library <small>view all</small></h2><div id="homeLearning" class="list"></div><button class="add" onclick="openModal('learning')">＋ New Goal</button>
+  </div>
+  <div class="panel"><img class="cover" src="camera.jpeg" alt="camera.jpeg"><h2>YouTube Studio <small>view all</small></h2><div id="homeVideos" class="list"></div><button class="add" onclick="openModal('video')">＋ New Video Idea</button></div>
+  <div class="panel"><img class="cover" src="dinner.jpeg" alt="dinner.jpeg"><h2>Recipe Atelier <small>view all</small></h2><div id="homeRecipes" class="list"></div><button class="add" onclick="openModal('recipe')">＋ New Recipe</button></div>
 <div class="panel calendar">
-  <h2>Today’s Schedule <small id="scheduleDate"></small></h2>
-  <div id="schedule" class="schedule"></div>
-  <button class="add" onclick="openModal('task')">＋ Add Event</button>
-</div>
-
 <div class="panel weekly-home">
-  <h2>Weekly Plan</h2>
-  <div class="week" id="weekMini"></div>
-  <button class="add" onclick="showPage('weekly')">＋ Edit Weekly Plan</button>
-</div>
-  <button class="add" onclick="showPage('weekly')">＋ Edit Weekly Plan</button>
+  <h2>Weekly Plan</h2>
+  <div class="week" id="weekMini"></div>
+  <button class="add" onclick="showPage('weekly')">＋ Edit Weekly Plan</button>
 </div><h2>Today’s Schedule <small id="scheduleDate"></small></h2><div id="schedule" class="schedule"></div><button class="add" onclick="openModal('task')">＋ Add Event</button></div>
- </div>
+ </div>
 <div class="bottom">
-  
-  <div class="panel mini"><h2>Wishlist</h2><div id="homeWish" class="list"></div><button class="add" onclick="openModal('wish')">＋ Add Wishlist Item</button></div>
-  <div class="panel mini"><h2>Travel Journal</h2><div class="quote" style="margin:0">Osaka<br><small>5 Days Trip</small></div><div class="sub" style="margin-top:8px">2026.06.15 → 06.19</div><button class="add" onclick="showPage('travel')">＋ New Trip</button></div>
-  <div class="panel mini"><h2>Monthly Reflection</h2><div class="quote" id="reflectionMini" style="margin:0">This month, I am grateful for...</div><button class="add" onclick="openModal('reflection')">＋ Write Reflection</button></div>
-  <div class="panel mini"><h2>Personal Vault</h2><div id="homeVault" class="list"></div><button class="add" onclick="openModal('vault')">＋ Add New Account</button></div>
- </div>
+ 
+  <div class="panel mini"><h2>Wishlist</h2><div id="homeWish" class="list"></div><button class="add" onclick="openModal('wish')">＋ Add Wishlist Item</button></div>
+  <div class="panel mini"><h2>Travel Journal</h2><div class="quote" style="margin:0">Osaka<br><small>5 Days Trip</small></div><div class="sub" style="margin-top:8px">2026.06.15 → 06.19</div><button class="add" onclick="showPage('travel')">＋ New Trip</button></div>
+  <div class="panel mini"><h2>Monthly Reflection</h2><div class="quote" id="reflectionMini" style="margin:0">This month, I am grateful for...</div><button class="add" onclick="openModal('reflection')">＋ Write Reflection</button></div>
+  <div class="panel mini"><h2>Personal Vault</h2><div id="homeVault" class="list"></div><button class="add" onclick="openModal('vault')">＋ Add New Account</button></div>
+ </div>
 </section>
-
 <section id="learning" class="page"><div class="section-head"><div><h1>Learning Library</h1><p>Build skills slowly. Keep receipts.</p></div><button class="btn primary" onclick="openModal('learning')">＋ New Learning Goal</button></div><div id="learningCards" class="cards"></div></section>
 <section id="youtube" class="page"><div class="section-head"><div><h1>YouTube Studio</h1><p>Ideas, scripts, shot lists, and the occasional rabbit hole.</p></div><button class="btn primary" onclick="openModal('video')">＋ New Video Idea</button></div><div id="videoCards" class="cards"></div><div class="panel" style="margin-top:14px"><h2>Script Archive</h2><div id="scriptArchive"></div><button class="add" onclick="openModal('script')">＋ New Script</button></div></section>
 <section id="recipes" class="page"><div class="section-head"><div><h1>Recipe Atelier</h1><p>A scrapbook kitchen for recipes worth making twice.</p></div><button class="btn primary" onclick="openModal('recipe')">＋ New Recipe</button></div><div id="recipeCards" class="cards"></div></section>
 <section id="planner" class="page"><div class="section-head"><div><h1>Calendar & To-do</h1><p>Life, but with fewer things hiding behind your brain.</p></div><button class="btn primary" onclick="openModal('task')">＋ Add Task / Event</button></div>
- 
- <div class="grid"><div class="panel calendar"><h2>Today’s Timeline</h2><div id="plannerSchedule" class="schedule"></div></div><div class="panel"><h2>All Tasks</h2><div id="taskList" class="list"></div></div></div></section>
+ <div class="grid"><div class="panel calendar"><h2>Today’s Timeline</h2><div id="plannerSchedule" class="schedule"></div></div><div class="panel"><h2>All Tasks</h2><div id="taskList" class="list"></div></div></div></section>
 <section id="weekly" class="page"><div class="section-head"><div><h1>Weekly Plan</h1><p>Seven tiny boxes. One week. No need to conquer civilization.</p></div><button class="btn primary" onclick="editWeekly()">＋ Add Plan Item</button></div><div class="panel"><div class="week" id="weekLarge"></div></div></section>
 <section id="wishlist" class="page"><div class="section-head"><div><h1>Wishlist</h1><p>Things I want, not necessarily things I need.</p></div><button class="btn primary" onclick="openModal('wish')">＋ Add Item</button></div><div id="wishCards" class="cards"></div></section>
 <section id="travel" class="page"><div class="section-head"><div><h1>Travel Journal</h1><p>A flexible scrapbook board for places, plans, tickets, maps, and memories.</p></div><button class="btn primary" onclick="addTravelNote()">＋ Add Note</button></div><div class="board" id="travelBoard">
- <div class="sticky" draggable="true" style="left:35px;top:30px;transform:rotate(-2deg)"><b>OSAKA</b><br><br>5 Days · Food · Shopping · Tiny streets<br><br>✈︎ 2026.06.15 → 06.19</div>
- <div class="sticky" draggable="true" style="left:280px;top:90px;transform:rotate(2deg)"><b>Places</b><br><br>☑ Osaka Castle<br>☑ Dotonbori<br>☑ Kuromon Market<br>☐ Umeda Sky Building</div>
- <div class="sticky" draggable="true" style="left:540px;top:45px;transform:rotate(-1deg)"><b>Food Wishlist</b><br><br>🍜 Ramen<br>🍣 Sushi<br>🍰 Cafe<br>🍵 Matcha</div>
+ <div class="sticky" draggable="true" style="left:35px;top:30px;transform:rotate(-2deg)"><b>OSAKA</b><br><br>5 Days · Food · Shopping · Tiny streets<br><br>✈︎ 2026.06.15 → 06.19</div>
+ <div class="sticky" draggable="true" style="left:280px;top:90px;transform:rotate(2deg)"><b>Places</b><br><br>☑ Osaka Castle<br>☑ Dotonbori<br>☑ Kuromon Market<br>☐ Umeda Sky Building</div>
+ <div class="sticky" draggable="true" style="left:540px;top:45px;transform:rotate(-1deg)"><b>Food Wishlist</b><br><br>🍜 Ramen<br>🍣 Sushi<br>🍰 Cafe<br>🍵 Matcha</div>
 </div></section>
 <section id="reflection" class="page"><div class="section-head"><div><h1>Monthly Reflection</h1><p>Archive the month before it disappears.</p></div><button class="btn primary" onclick="openModal('reflection')">＋ Write Reflection</button></div><div id="reflectionCards" class="cards"></div></section>
 <section id="vault" class="page"><div class="section-head"><div><h1>Personal Vault</h1><p>Demo vault. Do not store real passwords in this prototype.</p></div><button class="btn primary" onclick="openModal('vault')">＋ Add Account</button></div><div id="vaultCards" class="cards"></div></section>
@@ -231,7 +197,6 @@ opacity:0;transform:translateY(10px);transition:.25s;z-index:100}.toast.show{opa
 </main></div>
 <div class="modal-back" id="modalBack" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
 <div class="toast" id="toast"></div>
-
 <script>
 const KEY='yolandaLifeOS_v2';
 const defaults={
@@ -288,7 +253,7 @@ schedule.innerHTML=sched;plannerSchedule.innerHTML=sched;
 taskList.innerHTML=data.tasks.map((x,i)=>`<label class="check"><input type="checkbox" ${x.done?'checked':''} onchange="toggleTask(${i})"><span>${esc(x.title)} <small>${esc(x.time)}</small></span></label>`).join('');
 learningCards.innerHTML=data.learning.map((x,i)=>`<div class="card"><h3>${esc(x.title)}</h3><p>${esc(x.goal)}</p><div class="sub">Estimated ${x.hours} hours · ${x.progress}% complete</div><div class="bar"><i style="width:${x.progress}%"></i></div>${(x.items||[]).map(it=>`<label class="check"><input type="checkbox"><span>${esc(it)}</span></label>`).join('')}<div class="actions"><button class="btn" onclick="del('learning',${i})">Delete</button></div></div>`).join('');
 videoCards.innerHTML=data.videos.map((x,i)=>`<div class="card"><div class="recipe-emoji">🎬</div><h3>${esc(x.title)}</h3><p>${esc(x.type)} · ${esc(x.length)}</p><span class="tag">${esc(x.status)}</span><div class="actions"><button class="btn" onclick="openModal('script','${esc(x.title)}')">Script</button><button class="btn" onclick="del('videos',${i})">Delete</button></div></div>`).join('');
-recipeCards.innerHTML=data.recipes.map((x,i)=>`<div class="card">${x.image?`<img class="cover" src="${esc(x.image)}" alt="${esc(x.title)}" onerror="this.outerHTML='<div class=recipe-emoji>${x.emoji||'🍴'}</div>'">`:`<div class="recipe-emoji">${x.emoji||'🍴'}</div>`}<h3>${esc(x.title)}</h3><p>${x.rating||'☆☆☆☆☆'} · ${esc(x.time)}</p><p>${esc(x.notes||'A recipe waiting to become a regular.')}</p><div class="actions"><button class="btn" onclick="del('recipes',${i})">Delete</button></div></div>`).join('');
+recipeCards.innerHTML=data.recipes.map((x,i)=>`<div class="card">${x.image?`<img class="cover" src="$$   {esc(x.image)}" alt="   $${esc(x.title)}" onerror="this.outerHTML='<div class=recipe-emoji>$$   {x.emoji||'🍴'}</div>'">`:`<div class="recipe-emoji">   $${x.emoji||'🍴'}</div>`}<h3>${esc(x.title)}</h3><p>${x.rating||'☆☆☆☆☆'} · ${esc(x.time)}</p><p>${esc(x.notes||'A recipe waiting to become a regular.')}</p><div class="actions"><button class="btn" onclick="del('recipes',${i})">Delete</button></div></div>`).join('');
 wishCards.innerHTML=data.wishes.map((x,i)=>`<div class="card"><div style="font-size:55px">${x.emoji}</div><h3>${esc(x.title)}</h3><p>${esc(x.price)}</p><span class="tag">Wishlist</span><div class="actions"><button class="btn" onclick="del('wishes',${i})">Delete</button></div></div>`).join('');
 vaultCards.innerHTML=data.vault.map((x,i)=>`<div class="card"><h3>◉ ${esc(x.site)}</h3><p>${esc(x.account)}</p><div class="sub">Password hidden in prototype</div><div class="actions"><button class="btn" onclick="del('vault',${i})">Delete</button></div></div>`).join('');
 reflectionCards.innerHTML=(data.reflections.length?data.reflections:[{month:'August 2026',learned:'AI、韓語學習、剪輯技巧',grateful:'遇見很多美好的人事物，讓我更確定自己的方向。',mood:'🙂'}]).map(x=>`<div class="card"><h3>${esc(x.month)}</h3><p><b>This month, I am grateful for...</b><br>${esc(x.grateful)}</p><p><b>What I learned</b><br>${esc(x.learned)}</p><div style="font-size:28px">${esc(x.mood||'🙂')}</div></div>`).join('');
@@ -330,4 +295,3 @@ render();
 </script>
 </body>
 </html>
-
