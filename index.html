@@ -74,7 +74,7 @@ text-align:center;transform:rotate(1.5deg);box-shadow:var(--shadow)}
 .panel h2{font:600 21px/1.2 "Cormorant Garamond";margin:0 0 10px;display:flex;justify-content:space-between;align-items:center;gap:10px}
 .panel h2 small{font:12px "Noto Serif TC";color:var(--muted);font-weight:400}
 .list{display:grid;gap:7px}.row{display:flex;align-items:center;gap:10px;padding:8px;border-bottom:1px dashed #ddcfb9;min-width:0}
-.row:last-child{border:0}.row b{font-weight:600}.row>div{min-width:0}
+.row:last-child{border:0}.row b{font-weight:600;word-break:normal;overflow-wrap:normal}.row>div{min-width:0}
 .thumb{width:58px;height:43px;flex:0 0 58px;border-radius:7px;object-fit:cover;background:#e3d1b5;display:grid;place-items:center;font-size:20px;overflow:hidden}
 .thumb img{width:100%;height:100%;object-fit:cover}.meta{font-size:11px;color:var(--muted);margin-top:2px}
 .tag{margin-left:auto;font-size:10px;padding:4px 7px;border-radius:9px;background:#eadfd0;white-space:nowrap}
@@ -84,7 +84,7 @@ text-align:center;transform:rotate(1.5deg);box-shadow:var(--shadow)}
 }
 .time{color:#8c7a67}.event{padding:7px 10px;border-radius:8px;background:#ead4ca;border-left:4px solid var(--wine)}
 .event.green{background:#dfe8d7;border-left-color:var(--green)}.event.gold{background:#efe0bd;border-left-color:var(--gold)}
-.bottom{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:10px}.mini{min-height:210px}
+.bottom{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:10px;align-items:start}
 .week{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;font-size:10px}.week div{padding:6px 2px;border:1px solid #e0d1bb;text-align:center;min-height:33px}
 .week .head{background:#eee2cf;font-weight:600;min-height:auto}
 .page{display:none}.page.active{display:block}
@@ -176,7 +176,7 @@ opacity:0;transform:translateY(10px);transition:.25s;z-index:100}.toast.show{opa
   <button class="add" onclick="showPage('weekly')">＋ Edit Weekly Plan</button>
 </div><h2>Today’s Schedule <small id="scheduleDate"></small></h2><div id="schedule" class="schedule"></div><button class="add" onclick="openModal('task')">＋ Add Event</button></div>
  </div>
- <div class="bottom"><div class="panel mini"><h2>Weekly Plan</h2><div class="week" id="weekMini"></div><button class="add" onclick="showPage('weekly')">＋ Edit Weekly Plan</button></div>
+ <div class="bottom" style="grid-template-columns:repeat(5,1fr);">
   
   <div class="panel mini"><h2>Wishlist</h2><div id="homeWish" class="list"></div><button class="add" onclick="openModal('wish')">＋ Add Wishlist Item</button></div>
   <div class="panel mini"><h2>Travel Journal</h2><div class="quote" style="margin:0">Osaka<br><small>5 Days Trip</small></div><div class="sub" style="margin-top:8px">2026.06.15 → 06.19</div><button class="add" onclick="showPage('travel')">＋ New Trip</button></div>
