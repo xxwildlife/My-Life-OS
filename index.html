@@ -240,6 +240,12 @@ reflections:[],vault:[
 {site:'蝦皮購物',account:'yolanda_88'},
 {site:'Email',account:'yolanda.work@gmail.com'}],scripts:[]};
 let data=JSON.parse(localStorage.getItem(KEY)||'null')||defaults;
+data.learning.forEach(x=>{
+  if(!x.checked){
+    const count=Math.round((x.progress||0)/100*(x.items?.length||0));
+    x.checked=(x.items||[]).map((_,i)=>i<count);
+  }
+}); 
 function save(){localStorage.setItem(KEY,JSON.stringify(data));render();toast('Saved ✓')}
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function toast(s){let t=document.getElementById('toast');t.textContent=s;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1500)}
@@ -249,7 +255,19 @@ function render(){
 let d=new Date();today.textContent=d.toLocaleDateString('en-US',{month:'short',day:'2-digit',year:'numeric'});weekday.textContent=d.toLocaleDateString('en-US',{weekday:'long'});scheduleDate.textContent=d.toLocaleDateString('en-US',{month:'short',day:'2-digit',year:'numeric'});
 statGoals.textContent=data.learning.length;statVideos.textContent=data.videos.length;statRecipes.textContent=data.recipes.length;statTasks.textContent=data.tasks.length;statEvents.textContent=data.tasks.length;
 let avg=data.learning.length?Math.round(data.learning.reduce((a,x)=>a+x.progress,0)/data.learning.length):0;goalBar.style.width=avg+'%';
-homeLearning.innerHTML=data.learning.slice(0,6).map(x=>`<div class="row"><span>▢</span><div style="flex:1">${esc(x.title)}<div class="progress"><i style="width:${x.progress}%"></i></div></div><span class="meta">${x.progress}%</span></div>`).join('');
+homeLearning.innerHTML=data.learning.slice(0,6).map(x=>{
+  const progress=calcProgress(x);
+  return `<div class="row">
+    <span>▢</span>
+    <div style="flex:1">
+      ${esc(x.title)}
+      <div class="progress">
+        <i style="width:${progress}%"></i>
+      </div>
+    </div>
+    <span class="meta">${progress}%</span>
+  </div>`;
+}).join('');
 homeVideos.innerHTML=data.videos.slice(0,4).map(x=>`<div class="row"><div class="thumb">🎬</div><div style="flex:1"><b>${esc(x.title)}</b><div class="meta">${esc(x.type)} · ${esc(x.length)}</div></div><span class="tag">${esc(x.status)}</span></div>`).join('');
 homeRecipes.innerHTML=data.recipes.slice(0,4).map(x=>`<div class="row"><div class="thumb">${x.emoji||'🍴'}</div><div style="flex:1"><b>${esc(x.title)}</b><div class="meta">${x.rating} · ${esc(x.time)}</div></div></div>`).join('');
 homeWish.innerHTML=data.wishes.slice(0,3).map(x=>`<div class="row"><div class="thumb">${x.emoji}</div><div><b>${esc(x.title)}</b><div class="meta">${esc(x.price)}</div></div><span style="margin-left:auto;color:#a45145">♥</span></div>`).join('');
@@ -295,6 +313,34 @@ renderWeek()
 }
 function renderWeek(){let days=['MON','TUE','WED','THU','FRI','SAT','SUN'],h=days.map(x=>`<div class="head">${x}</div>`).join('');for(let r=0;r<5;r++)for(let c=0;c<7;c++)h+=`<div>${r===0&&c===2?'✓':r===1&&c===3?'✓':r===2&&c===5?'✓':''}</div>`;weekMini.innerHTML=h;weekLarge.innerHTML=h}
 function toggleTask(i){data.tasks[i].done=!data.tasks[i].done;save()}
+function calcProgress(x){
+  const items=x.items||[];
+  if(!items.length)return 0;
+  const checked=x.checked||[];
+  return Math.round((checked.filter(Boolean).length/items.length)*100);
+}
+
+function editLearning(i,key,value){
+  data.learning[i][key]=value.trim();
+  save();
+}
+
+function editLearningItem(i,j,value){
+  data.learning[i].items[j]=value.trim();
+  save();
+}
+
+function toggleLearningItem(i,j){
+  if(!data.learning[i].checked){
+    data.learning[i].checked=[];
+  }
+
+  data.learning[i].checked[j]=!data.learning[i].checked[j];
+
+  data.learning[i].progress=calcProgress(data.learning[i]);
+
+  save();
+} 
 function del(k,i){if(confirm('Delete this item?')){data[k].splice(i,1);save()}}
 function val(id){return document.getElementById(id)?.value.trim()||''}
 function closeModal(){modalBack.classList.remove('show')}
