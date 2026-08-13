@@ -10,20 +10,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Noto+Serif+TC:wght@400;500;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
 <style>
- .editable{
-  cursor:text;
-  outline:none;
-  border-radius:4px;
-}
-
-.editable:hover{
-  background:#f4eadb;
-}
-
-.editable:focus{
-  background:#fffaf0;
-  box-shadow:0 0 0 2px #e3d0b5;
-}
 :root{
  --paper:#f5eddd;--paper2:#fffaf0;--ink:#3d3027;--muted:#786a5c;
  --wine:#8d4f43;--green:#66775e;--gold:#b38b57;--line:#d8c8ae;
@@ -84,7 +70,7 @@ text-align:center;transform:rotate(1.5deg);box-shadow:var(--shadow)}
 .stat{padding:13px 15px;min-height:90px}.stat .label{font-size:12px;color:var(--muted)}
 .stat .num{font:31px "Cormorant Garamond";margin:3px 0}
 .progress{height:5px;background:#e5d7c2;border-radius:5px;overflow:hidden}.progress i{display:block;height:100%;background:var(--wine);border-radius:5px}
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .panel h2{font:600 21px/1.2 "Cormorant Garamond";margin:0 0 10px;display:flex;justify-content:space-between;align-items:center;gap:10px}
 .panel h2 small{font:12px "Noto Serif TC";color:var(--muted);font-weight:400}
 .list{display:grid;gap:7px}.row{display:flex;align-items:center;gap:10px;padding:8px;border-bottom:1px dashed #ddcfb9;min-width:0}
@@ -98,7 +84,7 @@ text-align:center;transform:rotate(1.5deg);box-shadow:var(--shadow)}
 }
 .time{color:#8c7a67}.event{padding:7px 10px;border-radius:8px;background:#ead4ca;border-left:4px solid var(--wine)}
 .event.green{background:#dfe8d7;border-left-color:var(--green)}.event.gold{background:#efe0bd;border-left-color:var(--gold)}
-.bottom{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:10px;width:100%}.mini{min-height:210px;min-width:0}
+.bottom{display:grid;grid-template-columns:repeat(5,minimax(0,1fr));gap:16px;margin-top:10px;width:100$}.mini{min-height:210px;min-width:0}
 .week{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;font-size:10px}.week div{padding:6px 2px;border:1px solid #e0d1bb;text-align:center;min-height:33px}
 .week .head{background:#eee2cf;font-weight:600;min-height:auto}
 .page{display:none}.page.active{display:block}
@@ -121,7 +107,7 @@ border-radius:17px;padding:22px;box-shadow:0 25px 80px rgba(20,12,8,.3)}
 opacity:0;transform:translateY(10px);transition:.25s;z-index:100}.toast.show{opacity:1;transform:translateY(0)}
 .cover{width:100%;height:150px;object-fit:cover;border-radius:10px;background:#e3d1b5;display:block;margin-bottom:12px}
 .recipe-emoji{height:150px;font-size:60px;display:grid;place-items:center;background:#eadbc3;border-radius:10px;margin-bottom:12px}
-@media(max-width:1200px){.grid5{grid-template-columns:repeat(3,minmax(0,1fr))}.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.calendar{grid-column:span 2}.cards{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:1200px){.grid5{grid-template-columns:repeat(3,1fr)}.grid{grid-template-columns:1fr 1fr}.calendar{grid-column:span 2}.bottom{grid-template-columns:repeat(2,1fr)}.cards{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:800px){
  .sidebar{position:relative;width:100%;height:auto;border-right:0;border-bottom:1px solid #d7c8b1;padding:18px 12px}
  .app{display:block}.main{margin-left:0;width:100%;padding:15px}
@@ -190,7 +176,7 @@ opacity:0;transform:translateY(10px);transition:.25s;z-index:100}.toast.show{opa
   <button class="add" onclick="showPage('weekly')">＋ Edit Weekly Plan</button>
 </div><h2>Today’s Schedule <small id="scheduleDate"></small></h2><div id="schedule" class="schedule"></div><button class="add" onclick="openModal('task')">＋ Add Event</button></div>
  </div>
- 
+ <div class="bottom"><div class="panel mini"><h2>Weekly Plan</h2><div class="week" id="weekMini"></div><button class="add" onclick="showPage('weekly')">＋ Edit Weekly Plan</button></div>
   
   <div class="panel mini"><h2>Wishlist</h2><div id="homeWish" class="list"></div><button class="add" onclick="openModal('wish')">＋ Add Wishlist Item</button></div>
   <div class="panel mini"><h2>Travel Journal</h2><div class="quote" style="margin:0">Osaka<br><small>5 Days Trip</small></div><div class="sub" style="margin-top:8px">2026.06.15 → 06.19</div><button class="add" onclick="showPage('travel')">＋ New Trip</button></div>
@@ -254,22 +240,6 @@ reflections:[],vault:[
 {site:'蝦皮購物',account:'yolanda_88'},
 {site:'Email',account:'yolanda.work@gmail.com'}],scripts:[]};
 let data=JSON.parse(localStorage.getItem(KEY)||'null')||defaults;
-
-data.learning.forEach(x=>{
-  if(x.items?.length && typeof x.items[0]==='string'){
-    const doneCount=Math.round((x.progress||0)/100*x.items.length);
-    x.items=x.items.map((text,i)=>({
-      text,
-      done:i<doneCount
-    }));
-  }
-});
-data.learning.forEach(x=>{
-  if(!x.checked){
-    const count=Math.round((x.progress||0)/100*(x.items?.length||0));
-    x.checked=(x.items||[]).map((_,i)=>i<count);
-  }
-}); 
 function save(){localStorage.setItem(KEY,JSON.stringify(data));render();toast('Saved ✓')}
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function toast(s){let t=document.getElementById('toast');t.textContent=s;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1500)}
@@ -279,19 +249,7 @@ function render(){
 let d=new Date();today.textContent=d.toLocaleDateString('en-US',{month:'short',day:'2-digit',year:'numeric'});weekday.textContent=d.toLocaleDateString('en-US',{weekday:'long'});scheduleDate.textContent=d.toLocaleDateString('en-US',{month:'short',day:'2-digit',year:'numeric'});
 statGoals.textContent=data.learning.length;statVideos.textContent=data.videos.length;statRecipes.textContent=data.recipes.length;statTasks.textContent=data.tasks.length;statEvents.textContent=data.tasks.length;
 let avg=data.learning.length?Math.round(data.learning.reduce((a,x)=>a+x.progress,0)/data.learning.length):0;goalBar.style.width=avg+'%';
-homeLearning.innerHTML=data.learning.slice(0,6).map(x=>{
-  const progress=calcProgress(x);
-  return `<div class="row">
-    <span>▢</span>
-    <div style="flex:1">
-      ${esc(x.title)}
-      <div class="progress">
-        <i style="width:${progress}%"></i>
-      </div>
-    </div>
-    <span class="meta">${progress}%</span>
-  </div>`;
-}).join('');
+homeLearning.innerHTML=data.learning.slice(0,6).map(x=>`<div class="row"><span>▢</span><div style="flex:1">${esc(x.title)}<div class="progress"><i style="width:${x.progress}%"></i></div></div><span class="meta">${x.progress}%</span></div>`).join('');
 homeVideos.innerHTML=data.videos.slice(0,4).map(x=>`<div class="row"><div class="thumb">🎬</div><div style="flex:1"><b>${esc(x.title)}</b><div class="meta">${esc(x.type)} · ${esc(x.length)}</div></div><span class="tag">${esc(x.status)}</span></div>`).join('');
 homeRecipes.innerHTML=data.recipes.slice(0,4).map(x=>`<div class="row"><div class="thumb">${x.emoji||'🍴'}</div><div style="flex:1"><b>${esc(x.title)}</b><div class="meta">${x.rating} · ${esc(x.time)}</div></div></div>`).join('');
 homeWish.innerHTML=data.wishes.slice(0,3).map(x=>`<div class="row"><div class="thumb">${x.emoji}</div><div><b>${esc(x.title)}</b><div class="meta">${esc(x.price)}</div></div><span style="margin-left:auto;color:#a45145">♥</span></div>`).join('');
@@ -299,49 +257,7 @@ homeVault.innerHTML=data.vault.slice(0,5).map(x=>`<div class="row"><span>◉</sp
 let sched=data.tasks.map(x=>`<span class="time">${esc(x.time)}</span><div class="event ${x.kind==='green'?'green':''} ${x.kind==='gold'?'gold':''}">${esc(x.title)}</div>`).join('');
 schedule.innerHTML=sched;plannerSchedule.innerHTML=sched;
 taskList.innerHTML=data.tasks.map((x,i)=>`<label class="check"><input type="checkbox" ${x.done?'checked':''} onchange="toggleTask(${i})"><span>${esc(x.title)} <small>${esc(x.time)}</small></span></label>`).join('');
-learningCards.innerHTML=data.learning.map((x,i)=>`
-<div class="card">
-  <h3 contenteditable="true"
-      class="editable"
-      onblur="editLearning(${i},'title',this.innerText)"
-      onkeydown="finishEdit(event,this)">
-      ${esc(x.title)}
-  </h3>
-
-  <p contenteditable="true"
-     class="editable"
-     onblur="editLearning(${i},'goal',this.innerText)"
-     onkeydown="finishEdit(event,this)">
-     ${esc(x.goal)}
-  </p>
-
-  <div class="sub">
-    Estimated ${x.hours} hours · <span id="progressText-${i}">${x.progress}%</span> complete
-  </div>
-
-  <div class="bar">
-    <i id="progressBar-${i}" style="width:${x.progress}%"></i>
-  </div>
-
-  ${(x.items||[]).map((it,j)=>`
-    <label class="check">
-      <input
-        type="checkbox"
-        ${it.done?'checked':''}
-        onchange="toggleLearningItem(${i},${j},this.checked)"
-      >
-      <span
-        contenteditable="true"
-        class="editable"
-        onblur="editLearningItem(${i},${j},this.innerText)"
-        onkeydown="finishEdit(event,this)"
-      >${esc(it.text)}</span>
-    </label>
-  `).join('')}
-</div>
-`).join('');
-  </div>`;
-}).join('');
+learningCards.innerHTML=data.learning.map((x,i)=>`<div class="card"><h3>${esc(x.title)}</h3><p>${esc(x.goal)}</p><div class="sub">Estimated ${x.hours} hours · ${x.progress}% complete</div><div class="bar"><i style="width:${x.progress}%"></i></div>${(x.items||[]).map(it=>`<label class="check"><input type="checkbox"><span>${esc(it)}</span></label>`).join('')}<div class="actions"><button class="btn" onclick="del('learning',${i})">Delete</button></div></div>`).join('');
 videoCards.innerHTML=data.videos.map((x,i)=>`<div class="card"><div class="recipe-emoji">🎬</div><h3>${esc(x.title)}</h3><p>${esc(x.type)} · ${esc(x.length)}</p><span class="tag">${esc(x.status)}</span><div class="actions"><button class="btn" onclick="openModal('script','${esc(x.title)}')">Script</button><button class="btn" onclick="del('videos',${i})">Delete</button></div></div>`).join('');
 recipeCards.innerHTML=data.recipes.map((x,i)=>`<div class="card">${x.image?`<img class="cover" src="${esc(x.image)}" alt="${esc(x.title)}" onerror="this.outerHTML='<div class=recipe-emoji>${x.emoji||'🍴'}</div>'">`:`<div class="recipe-emoji">${x.emoji||'🍴'}</div>`}<h3>${esc(x.title)}</h3><p>${x.rating||'☆☆☆☆☆'} · ${esc(x.time)}</p><p>${esc(x.notes||'A recipe waiting to become a regular.')}</p><div class="actions"><button class="btn" onclick="del('recipes',${i})">Delete</button></div></div>`).join('');
 wishCards.innerHTML=data.wishes.map((x,i)=>`<div class="card"><div style="font-size:55px">${x.emoji}</div><h3>${esc(x.title)}</h3><p>${esc(x.price)}</p><span class="tag">Wishlist</span><div class="actions"><button class="btn" onclick="del('wishes',${i})">Delete</button></div></div>`).join('');
@@ -350,104 +266,8 @@ reflectionCards.innerHTML=(data.reflections.length?data.reflections:[{month:'Aug
 scriptArchive.innerHTML=data.scripts.length?data.scripts.map((x,i)=>`<div class="row"><div style="flex:1"><b>${esc(x.title)}</b><div class="meta">${esc(x.content).slice(0,100)}</div></div><button class="btn" onclick="del('scripts',${i})">Delete</button></div>`).join(''):'<div class="empty">No scripts yet. Your future masterpiece is suspiciously empty.</div>';
 renderWeek()
 }
-function finishEdit(e,el){
-  if(e.key==='Enter'){
-    e.preventDefault();
-    el.blur();
-  }
-}
-
-function editLearning(index,field,value){
-  data.learning[index][field]=value.trim();
-  localStorage.setItem(KEY,JSON.stringify(data));
-  updateLearningProgress(index);
-}
-
-function editLearningItem(index,itemIndex,value){
-  data.learning[index].items[itemIndex].text=value.trim();
-  localStorage.setItem(KEY,JSON.stringify(data));
-}
-
-function toggleLearningItem(index,itemIndex,checked){
-  data.learning[index].items[itemIndex].done=checked;
-  updateLearningProgress(index);
-}
-
-function updateLearningProgress(index){
-  const learning=data.learning[index];
-  const items=learning.items||[];
-
-  const done=items.filter(x=>x.done).length;
-  const progress=items.length
-    ? Math.round(done/items.length*100)
-    : 0;
-
-  learning.progress=progress;
-
-  localStorage.setItem(KEY,JSON.stringify(data));
-
-  const bar=document.getElementById(`progressBar-${index}`);
-  const text=document.getElementById(`progressText-${index}`);
-
-  if(bar) bar.style.width=progress+'%';
-  if(text) text.textContent=progress+'%';
-
-  updateHomeLearning(index);
-}
-
-function updateHomeLearning(){
-  homeLearning.innerHTML=data.learning.slice(0,6).map(x=>`
-    <div class="row">
-      <span>▢</span>
-      <div style="flex:1">
-        ${esc(x.title)}
-        <div class="progress">
-          <i style="width:${x.progress}%"></i>
-        </div>
-      </div>
-      <span class="meta">${x.progress}%</span>
-    </div>
-  `).join('');
-
-  const avg=data.learning.length
-    ? Math.round(
-        data.learning.reduce((a,x)=>a+x.progress,0)
-        /data.learning.length
-      )
-    : 0;
-
-  goalBar.style.width=avg+'%';
-}
- function renderWeek(){let days=['MON','TUE','WED','THU','FRI','SAT','SUN'],h=days.map(x=>`<div class="head">${x}</div>`).join('');for(let r=0;r<5;r++)for(let c=0;c<7;c++)h+=`<div>${r===0&&c===2?'✓':r===1&&c===3?'✓':r===2&&c===5?'✓':''}</div>`;weekMini.innerHTML=h;weekLarge.innerHTML=h}
+function renderWeek(){let days=['MON','TUE','WED','THU','FRI','SAT','SUN'],h=days.map(x=>`<div class="head">${x}</div>`).join('');for(let r=0;r<5;r++)for(let c=0;c<7;c++)h+=`<div>${r===0&&c===2?'✓':r===1&&c===3?'✓':r===2&&c===5?'✓':''}</div>`;weekMini.innerHTML=h;weekLarge.innerHTML=h}
 function toggleTask(i){data.tasks[i].done=!data.tasks[i].done;save()}
-function calcProgress(x){
-  const items=x.items||[];
-  if(!items.length)return 0;
-  const checked=x.checked||[];
-  return Math.round((checked.filter(Boolean).length/items.length)*100);
-}
-
-function editLearning(i,key,value){
-  data.learning[i][key]=value.trim();
-  save();
-}
-
-function editLearningItem(i,j,value){
-  data.learning[i].items[j]=value.trim();
-  save();
-}
-
-function toggleLearningItem(i,j){
-  if(!data.learning[i].checked){
-    data.learning[i].checked=[];
-  }
-
-  data.learning[i].checked[j]=!data.learning[i].checked[j];
-
-  data.learning[i].progress=calcProgress(data.learning[i]);
-
-  save();
-} 
 function del(k,i){if(confirm('Delete this item?')){data[k].splice(i,1);save()}}
 function val(id){return document.getElementById(id)?.value.trim()||''}
 function closeModal(){modalBack.classList.remove('show')}
@@ -463,25 +283,7 @@ vault:`<h2>Personal Vault 🔐</h2><div class="field"><label>Service</label><inp
 script:`<h2>Script ✍️</h2><div class="field"><label>Title</label><input id="f1" value="${esc(prefill)}"></div><div class="field" style="margin-top:10px"><label>Script</label><textarea id="f2" style="min-height:260px"></textarea></div><div class="actions"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="addScript()">Save Script</button></div>`};
 modal.innerHTML=f[type];modalBack.classList.add('show')
 }
-function addLearning(){
-  const progress=+val('f5')||0;
-  const rawItems=val('f4').split(/\r?\n/).filter(Boolean);
-  const doneCount=Math.round(progress/100*rawItems.length);
-
-  data.learning.push({
-    title:val('f1')||'Untitled Goal',
-    hours:+val('f2')||0,
-    goal:val('f3'),
-    progress,
-    items:rawItems.map((text,i)=>({
-      text,
-      done:i<doneCount
-    }))
-  });
-
-  closeModal();
-  save();
-}
+function addLearning(){data.learning.push({title:val('f1')||'Untitled Goal',hours:+val('f2')||0,goal:val('f3'),progress:+val('f5')||0,items:val('f4').split(/\r?\n/).filter(Boolean)});closeModal();save()}
 function addVideo(){data.videos.push({title:val('f1')||'Untitled Video',type:val('f2'),length:val('f3'),status:'Idea',location:val('f4'),concept:val('f5')});closeModal();save()}
 function addRecipe(){data.recipes.push({title:val('f1')||'Untitled Recipe',time:val('f3'),rating:val('f4'),image:val('f5'),ingredients:val('f6'),steps:val('f7'),emoji:val('f8')||'🍴',notes:val('f9')});closeModal();save()}
 function addTask(){data.tasks.push({title:val('f1')||'Untitled Task',time:val('f2'),kind:val('f3'),done:false});data.tasks.sort((a,b)=>a.time.localeCompare(b.time));closeModal();save()}
