@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Life OS · Yolanda</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Noto+Serif+TC:wght@400;500;600;700&family=Patrick+Hand&display=swap');
+
+:root{
+  --paper:#f5eddd; --paper2:#fbf6eb; --ink:#3d3027; --muted:#786a5c;
+  --wine:#8d4f43; --wine2:#b86d5b; --green:#66775e; --gold:#b38b57;
+  --line:#d8c8ae; --shadow:0 8px 25px rgba(69,48,31,.11);
+  --radius:15px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#e8dcc6;color:var(--ink)}
+body{font-family:"Noto Serif TC",serif}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.app{display:flex;min-height:100vh;background:
+ radial-gradient(circle at 15% 20%,rgba(255,255,255,.55),transparent 28%),
+ radial-gradient(circle at 85% 80%,rgba(139,82,65,.08),transparent 24%),
+ repeating-linear-gradient(0deg,rgba(92,65,43,.025) 0 1px,transparent 1px 4px)}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:250px;padding:28px 18px;background:rgba(247,239,224,.94);border-right:1px solid #d7c8b1;z-index:10;overflow:auto}
+.brand{font-family:"Cormorant Garamond",serif;font-size:29px;line-height:.9;margin:0 10px 3px}
+.brand small{font:14px "Patrick Hand";display:block;margin-top:8px;color:var(--wine)}
+.nav{margin-top:28px;display:grid;gap:6px}
+.nav button{border:0;background:transparent;text-align:left;color:var(--ink);padding:11px 12px;border-radius:10px;display:flex;align-items:center;gap:12px;font-size:14px}
+.nav button:hover,.nav button.active{background:#ead7ca}
+.nav .ico{width:22px;text-align:center;font-size:17px}
+.quote{margin:28px 2px 0;padding:18px 14px;background:#f0e2cd;border:1px solid #dcc8a9;transform:rotate(-1deg);font-family:"Cormorant Garamond";font-size:18px}
+.quote span{display:block;font:13px "Patrick Hand";margin-top:8px;text-align:right}
+.main{margin-left:250px;width:calc(100% - 250px);padding:25px;min-width:0}
+.top{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:18px}
+.greeting{font-family:"Cormorant Garamond";font-size:31px}
+.sub{font-size:13px;color:var(--muted)}
+.toolbar{display:flex;gap:8px}
+.btn{border:1px solid var(--line);background:#fff9ef;color:var(--ink);border-radius:10px;padding:9px 13px;box-shadow:0 2px 8px rgba(60,40,20,.05)}
+.btn.primary{background:var(--wine);color:#fffaf1;border-color:var(--wine)}
+.btn.green{background:var(--green);color:white;border-color:var(--green)}
+.hero{min-height:185px;padding:24px 28px;position:relative;overflow:hidden;border:1px solid #d5c2a5;border-radius:18px;background:
+linear-gradient(90deg,rgba(255,248,233,.96) 0 56%,rgba(241,224,197,.82)),
+radial-gradient(circle at 75% 25%,#c49b6b 0 4%,transparent 5%),
+linear-gradient(145deg,#e5d0ae,#f9f0df);box-shadow:var(--shadow)}
+.hero:after{content:"❦";position:absolute;right:27px;bottom:7px;color:#9a6a55;font-size:48px;transform:rotate(-12deg)}
+.hero h1{font:600 44px "Cormorant Garamond";margin:5px 0 3px}
+.hero p{font:17px "Cormorant Garamond";margin:0;color:#5d4b3d}
+.datecard{position:absolute;right:55px;top:25px;background:#fff9ed;border:1px solid #d5c3a9;padding:12px 25px;text-align:center;transform:rotate(1.5deg);box-shadow:var(--shadow)}
+.datecard strong{font:28px "Cormorant Garamond";display:block}
+.datecard small{color:var(--muted)}
+.grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:12px 0}
+.stat,.panel{background:rgba(255,250,240,.93);border:1px solid #d9c8ac;border-radius:14px;box-shadow:var(--shadow)}
+.stat{padding:13px 15px;min-height:90px}
+.stat .label{font-size:12px;color:var(--muted)}
+.stat .num{font:31px "Cormorant Garamond";margin:3px 0}
+.progress{height:5px;background:#e5d7c2;border-radius:5px;overflow:hidden}
+.progress i{display:block;height:100%;background:var(--wine);border-radius:5px}
+.grid{display:grid;grid-template-columns:1.05fr 1fr 1fr 1.05fr;gap:10px}
+.panel{padding:16px;min-width:0}
+.panel h2{font:600 21px "Cormorant Garamond";margin:0 0 10px;display:flex;justify-content:space-between;align-items:center}
+.panel h2 small{font:12px "Noto Serif TC";color:var(--muted)}
+.list{display:grid;gap:7px}
+.row{display:flex;align-items:center;gap:10px;padding:8px;border-bottom:1px dashed #ddcfb9}
+.row:last-child{border:0}
+.thumb{width:58px;height:43px;border-radius:7px;object-fit:cover;background:#e3d1b5;display:grid;place-items:center;font-size:20px}
+.row .meta{font-size:11px;color:var(--muted);margin-top:2px}
+.tag{margin-left:auto;font-size:10px;padding:4px 7px;border-radius:9px;background:#eadfd0;white-space:nowrap}
+.add{width:100%;margin-top:10px;border:1px dashed #c8b79b;background:#faf2e3;padding:8px;border-radius:9px;color:#6e5b49}
+.calendar{grid-column:span 2}
+.schedule{display:grid;grid-template-columns:42px 1fr;gap:7px;font-size:12px}
+.time{color:#8c7a67}
+.event{padding:7px 10px;border-radius:8px;background:#ead4ca;border-left:4px solid var(--wine)}
+.event.green{background:#dfe8d7;border-left-color:var(--green)}
+.event.gold{background:#efe0bd;border-left-color:var(--gold)}
+.bottom{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:10px}
+.mini{min-height:210px}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;font-size:10px}
+.week div{padding:6px 2px;border:1px solid #e0d1bb;text-align:center;min-height:33px}
+.week .head{background:#eee2cf;font-weight:600;min-height:auto}
+.quote2{font:20px "Cormorant Garamond";line-height:1.2;padding:16px;background:#f2e5d2;border:1px solid #d8c5a6}
+.page{display:none}
+.page.active{display:block}
+.section-head{display:flex;justify-content:space-between;align-items:end;margin:5px 0 16px}
+.section-head h1{font:600 39px "Cormorant Garamond";margin:0}
+.section-head p{color:var(--muted);margin:4px 0 0;font-size:13px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.card{background:#fffaf0;border:1px solid #d8c8ae;border-radius:14px;padding:16px;box-shadow:var(--shadow)}
+.card h3{font:600 23px "Cormorant Garamond";margin:0 0 8px}
+.card p{font-size:13px;line-height:1.65}
+.bar{height:7px;background:#e7dac6;border-radius:8px;overflow:hidden;margin:8px 0}.bar i{display:block;height:100%;background:var(--wine)}
+.check{display:flex;gap:8px;align-items:center;font-size:13px;padding:5px 0}
+.check input{accent-color:var(--wine)}
+.board{position:relative;min-height:500px;border:1px dashed #c8b79c;border-radius:16px;background:#f3e7d3;overflow:hidden}
+.sticky{position:absolute;width:190px;padding:14px;background:#fff1bf;box-shadow:0 8px 15px rgba(50,35,20,.15);cursor:grab}
+.sticky:nth-child(2){background:#e7e8d3}.sticky:nth-child(3){background:#efd9d1}
+.modal-back{position:fixed;inset:0;background:rgba(38,27,19,.4);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+.modal-back.show{display:flex}
+.modal{width:min(680px,100%);max-height:90vh;overflow:auto;background:#fff9ef;border:1px solid #cdbb9e;border-radius:17px;padding:22px;box-shadow:0 25px 80px rgba(20,12,8,.3)}
+.modal h2{font:600 30px "Cormorant Garamond";margin:0 0 15px}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.field{display:grid;gap:5px}.field.full{grid-column:1/-1}
+.field label{font-size:12px;color:var(--muted)}
+.field input,.field textarea,.field select{width:100%;padding:10px;border:1px solid #d7c7ad;background:#fffdf8;border-radius:9px;outline:none}
+.field textarea{min-height:100px;resize:vertical}
+.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:15px}
+.empty{text-align:center;padding:30px;color:var(--muted)}
+.toast{position:fixed;right:22px;bottom:22px;background:#3d3027;color:#fffaf1;padding:12px 16px;border-radius:10px;opacity:0;transform:translateY(10px);transition:.25s;z-index:100}.toast.show{opacity:1;transform:translateY(0)}
+@media(max-width:1200px){.grid5{grid-template-columns:repeat(3,1fr)}.grid{grid-template-columns:1fr 1fr}.calendar{grid-column:span 2}.bottom{grid-template-columns:repeat(2,1fr)}.cards{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:800px){.sidebar{position:relative;width:100%;height:auto;border-right:0;border-bottom:1px solid #d7c8b1}.app{display:block}.main{margin-left:0;width:100%;padding:15px}.nav{grid-template-columns:repeat(3,1fr)}.quote{display:none}.hero{min-height:230px}.datecard{position:relative;right:auto;top:auto;display:inline-block;margin-top:20px}.grid5,.grid,.bottom,.cards{grid-template-columns:1fr}.calendar{grid-column:auto}.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand">My Life OS<small>✿ by Yolanda</small></div>
+  <nav class="nav">
+    <button class="active" data-page="home"><span class="ico">⌂</span>Home</button>
+    <button data-page="learning"><span class="ico">♧</span>Learning Library</button>
+    <button data-page="youtube"><span class="ico">▣</span>YouTube Studio</button>
+    <button data-page="recipes"><span class="ico">♨</span>Recipe Atelier</button>
+    <button data-page="planner"><span class="ico">▦</span>Calendar & To-do</button>
+    <button data-page="weekly"><span class="ico">☷</span>Weekly Plan</button>
+    <button data-page="wishlist"><span class="ico">♡</span>Wishlist</button>
+    <button data-page="travel"><span class="ico">◇</span>Travel Journal</button>
+    <button data-page="reflection"><span class="ico">☾</span>Monthly Reflection</button>
+    <button data-page="vault"><span class="ico">▣</span>Personal Vault</button>
+    <button data-page="canvas"><span class="ico">✎</span>My Canvas</button>
+  </nav>
+  <div class="quote">“I am going to make everything around me beautiful — that will be my life.”<span>— Elsie de Wolfe</span></div>
+</aside>
+
+<main class="main">
+<section id="home" class="page active">
+  <div class="top"><div><div class="greeting">Good afternoon, Yolanda ☁️</div><div class="sub">Your little corner of the internet, where plans become things.</div></div><div class="toolbar"><button class="btn" onclick="openModal('task')">＋ Quick Task</button><button class="btn primary" onclick="quickAdd()">＋ Create</button></div></div>
+  <div class="hero"><h1>“You are the artist of your life.”</h1><p>Don’t hand the paintbrush to anyone else.</p><div class="datecard"><small>Today is</small><strong id="today"></strong><small id="weekday"></small></div></div>
+  <div class="grid5">
+    <div class="stat"><div class="label">📚 Learning Progress</div><div class="num" id="statGoals">0</div><div class="sub">goals</div><div class="progress"><i id="goalBar" style="width:0%"></i></div></div>
+    <div class="stat"><div class="label">🎥 YouTube Ideas</div><div class="num" id="statVideos">0</div><div class="sub">ideas</div></div>
+    <div class="stat"><div class="label">🍝 Recipes Collected</div><div class="num" id="statRecipes">0</div><div class="sub">recipes</div></div>
+    <div class="stat"><div class="label">☑ Tasks Today</div><div class="num" id="statTasks">0</div><div class="sub">tasks</div></div>
+    <div class="stat"><div class="label">🗓 This Month</div><div class="num" id="statEvents">0</div><div class="sub">events</div></div>
+  </div>
+  <div class="grid">
+    <div class="panel"><h2>Learning Library <small>view all</small></h2><div id="homeLearning" class="list"></div><button class="add" onclick="openModal('learning')">＋ New Goal</button></div>
+    <div class="panel"><h2>YouTube Studio <small>view all</small></h2><div id="homeVideos" class="list"></div><button class="add" onclick="openModal('video')">＋ New Video Idea</button></div>
+    <div class="panel"><h2>Recipe Atelier <small>view all</small></h2><div id="homeRecipes" class="list"></div><button class="add" onclick="openModal('recipe')">＋ New Recipe</button></div>
+    <div class="panel calendar"><h2>Today’s Schedule <small>‹ &nbsp; <span id="scheduleDate"></span> &nbsp; ›</small></h2><div id="schedule" class="schedule"></div><button class="add" onclick="openModal('task')">＋ Add Event</button></div>
+  </div>
+  <div class="bottom">
+    <div class="panel mini"><h2>Weekly Plan <small>view all</small></h2><div class="week" id="weekMini"></div><button class="add" onclick="showPage('weekly')">＋ Edit Weekly Plan</button></div>
+    <div class="panel mini"><h2>Wishlist <small>view all</small></h2><div id="homeWish" class="list"></div><button class="add" onclick="openModal('wish')">＋ Add Wishlist Item</button></div>
+    <div class="panel mini"><h2>Travel Journal <small>view all</small></h2><div class="quote2">Osaka<br><small>5 Days Trip</small></div><div class="sub" style="margin-top:8px">2026.06.15 → 06.19</div><button class="add" onclick="showPage('travel')">＋ New Trip</button></div>
+    <div class="panel mini"><h2>Monthly Reflection <small>view all</small></h2><div class="quote2" id="reflectionMini">This month, I am grateful for...</div><button class="add" onclick="openModal('reflection')">＋ Write Reflection</button></div>
+    <div class="panel mini"><h2>Personal Vault <small>view all</small></h2><div id="homeVault" class="list"></div><button class="add" onclick="openModal('vault')">＋ Add New Account</button></div>
+  </div>
+</section>
+
+<section id="learning" class="page">
+  <div class="section-head"><div><h1>Learning Library</h1><p>Build skills slowly. Keep receipts.</p></div><button class="btn primary" onclick="openModal('learning')">＋ New Learning Goal</button></div>
+  <div id="learningCards" class="cards"></div>
+</section>
+
+<section id="youtube" class="page">
+  <div class="section-head"><div><h1>YouTube Studio</h1><p>Ideas, scripts, shot lists, and the occasional rabbit hole.</p></div><button class="btn primary" onclick="openModal('video')">＋ New Video Idea</button></div>
+  <div id="videoCards" class="cards"></div>
+  <div class="panel" style="margin-top:14px"><h2>Script Archive <small>your words live here</small></h2><div id="scriptArchive"></div><button class="add" onclick="openModal('script')">＋ New Script</button></div>
+</section>
+
+<section id="recipes" class="page">
+  <div class="section-head"><div><h1>Recipe Atelier</h1><p>A scrapbook kitchen for recipes worth making twice.</p></div><button class="btn primary" onclick="openModal('recipe')">＋ New Recipe</button></div>
+  <div id="recipeCards" class="cards"></div>
+</section>
+
+<section id="planner" class="page">
+  <div class="section-head"><div><h1>Calendar & To-do</h1><p>Life, but with fewer things hiding behind your brain.</p></div><button class="btn primary" onclick="openModal('task')">＋ Add Task / Event</button></div>
+  <div class="grid"><div class="panel calendar"><h2>Today’s Timeline</h2><div id="plannerSchedule" class="schedule"></div></div><div class="panel"><h2>All Tasks</h2><div id="taskList" class="list"></div></div></div>
+</section>
+
+<section id="weekly" class="page">
+  <div class="section-head"><div><h1>Weekly Plan</h1><p>Seven tiny boxes. One week. No need to conquer civilization.</p></div><button class="btn primary" onclick="editWeekly()">＋ Add Plan Item</button></div>
+  <div class="panel"><div class="week" id="weekLarge"></div></div>
+</section>
+
+<section id="wishlist" class="page">
+  <div class="section-head"><div><h1>Wishlist</h1><p>Things I want, not necessarily things I need.</p></div><button class="btn primary" onclick="openModal('wish')">＋ Add Item</button></div>
+  <div id="wishCards" class="cards"></div>
+</section>
+
+<section id="travel" class="page">
+  <div class="section-head"><div><h1>Travel Journal</h1><p>A flexible scrapbook board for places, plans, tickets, maps, and memories.</p></div><button class="btn primary" onclick="addTravelNote()">＋ Add Note</button></div>
+  <div class="board" id="travelBoard">
+    <div class="sticky" draggable="true" style="left:35px;top:30px;transform:rotate(-2deg)"><b>OSAKA</b><br><br>5 Days · Food · Shopping · Tiny streets<br><br>✈︎ 2026.06.15 → 06.19</div>
+    <div class="sticky" draggable="true" style="left:280px;top:90px;transform:rotate(2deg)"><b>Places</b><br><br>☑ Osaka Castle<br>☑ Dotonbori<br>☑ Kuromon Market<br>☐ Umeda Sky Building</div>
+    <div class="sticky" draggable="true" style="left:540px;top:45px;transform:rotate(-1deg)"><b>Food Wishlist</b><br><br>🍜 Ramen<br>🍣 Sushi<br>🍰 Cafe<br>🍵 Matcha</div>
+  </div>
+</section>
+
+<section id="reflection" class="page">
+  <div class="section-head"><div><h1>Monthly Reflection</h1><p>Archive the month before it disappears.</p></div><button class="btn primary" onclick="openModal('reflection')">＋ Write Reflection</button></div>
+  <div id="reflectionCards" class="cards"></div>
+</section>
+
+<section id="vault" class="page">
+  <div class="section-head"><div><h1>Personal Vault</h1><p>Demo vault for organizing accounts. Do not store real passwords in this prototype.</p></div><button class="btn primary" onclick="openModal('vault')">＋ Add Account</button></div>
+  <div id="vaultCards" class="cards"></div>
+</section>
+
+<section id="canvas" class="page">
+  <div class="section-head"><div><h1>My Canvas</h1><p>The no-rules room. Put things here before deciding what they are.</p></div><button class="btn primary" onclick="addCanvasNote()">＋ New Note</button></div>
+  <div class="board" id="canvasBoard"></div>
+</section>
+</main>
+</div>
+
+<div class="modal-back" id="modalBack" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY='yolandaLifeOS_v1';
+const defaultData={
+ learning:[
+  {title:'AI 組織與應用',goal:'建立自己的 AI 工作流，理解工具、提示詞與自動化。',hours:30,progress:60,items:['理解 AI 基礎概念','Prompt Engineering','AI 工具實戰','建立個人 AI workflow']},
+  {title:'韓語學習',goal:'持續建立韓文閱讀、單字與日常對話能力。',hours:40,progress:40,items:['字母與發音','日常單字','基礎文法','聽力練習']},
+  {title:'日常英文精進',goal:'讓日常英文更自然，增加口語與閱讀輸入。',hours:25,progress:75,items:['每日閱讀','口語 shadowing','生活單字','英文寫作']},
+  {title:'CapCut 剪輯',goal:'熟練短影音剪輯、節奏、字幕與基本特效。',hours:20,progress:80,items:['剪輯節奏','字幕','轉場','音效']},
+  {title:'DaVinci Resolve',goal:'建立完整 YouTube 長片剪輯能力。',hours:35,progress:30,items:['剪輯介面','Cut & Edit','Color','Audio']}
+ ],
+ videos:[
+  {title:'大阪自由行 Vlog',type:'VLOG',length:'12–15 min',status:'Planning'},
+  {title:'韓國咖啡廳探店',type:'美食',length:'8–10 min',status:'Filming'},
+  {title:'一週學習計畫分享',type:'分享',length:'10–12 min',status:'Editing'},
+  {title:'貓咪的一天',type:'日常',length:'3–5 min',status:'Idea'}
+ ],
+ recipes:[
+  {title:'蒜香奶油蝦仁義大利麵',time:'30 min',rating:'★★★★☆',emoji:'🍝'},
+  {title:'提拉米蘇',time:'120 min',rating:'★★★★★',emoji:'🍰'},
+  {title:'韓式泡菜鍋',time:'40 min',rating:'★★★★☆',emoji:'🍲'},
+  {title:'香蕉燕麥鬆餅',time:'20 min',rating:'★★★★☆',emoji:'🥞'}
+ ],
+ tasks:[
+  {title:'韓語學習 30min',time:'08:00',kind:'pink',done:false},
+  {title:'剪輯影片一支',time:'10:00',kind:'gold',done:false},
+  {title:'午餐時間',time:'12:00',kind:'orange',done:false},
+  {title:'英文閱讀',time:'14:00',kind:'green',done:false},
+  {title:'運動 30min',time:'16:00',kind:'blue',done:false},
+  {title:'DaVinci 上課',time:'20:00',kind:'purple',done:false}
+ ],
+ wishes:[
+  {title:'SONY ZV-E10 相機',price:'NT$18,980',emoji:'📷'},
+  {title:'Dyson 吹風機',price:'NT$14,600',emoji:'💨'},
+  {title:'Marimekko 包包',price:'NT$4,980',emoji:'👜'}
+ ],
+ reflections:[],
+ vault:[
+  {site:'Google',account:'yolanda@gmail.com'},
+  {site:'Instagram',account:'@yourfriendsyoyo'},
+  {site:'YouTube',account:'yourfriendsyoyo'},
+  {site:'蝦皮購物',account:'yolanda_88'},
+  {site:'Email',account:'yolanda.work@gmail.com'}
+ ],
+ scripts:[]
+};
+let data=JSON.parse(localStorage.getItem(KEY)||'null')||defaultData;
+function save(){localStorage.setItem(KEY,JSON.stringify(data));render();toast('Saved ✓')}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function toast(s){const t=document.getElementById('toast');t.textContent=s;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1500)}
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));window.scrollTo({top:0,behavior:'smooth'})}
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>showPage(b.dataset.page));
+
+function render(){
+ const d=new Date(); document.getElementById('today').textContent=d.toLocaleDateString('en-US',{month:'short',day:'2-digit',year:'numeric'});document.getElementById('weekday').textContent=d.toLocaleDateString('en-US',{weekday:'long'});document.getElementById('scheduleDate').textContent=d.toLocaleDateString('en-US',{month:'short',day:'2-digit',year:'numeric'});
+ document.getElementById('statGoals').textContent=data.learning.length;document.getElementById('statVideos').textContent=data.videos.length;document.getElementById('statRecipes').textContent=data.recipes.length;document.getElementById('statTasks').textContent=data.tasks.length;document.getElementById('statEvents').textContent=data.tasks.length;
+ let avg=data.learning.length?Math.round(data.learning.reduce((a,x)=>a+x.progress,0)/data.learning.length):0;document.getElementById('goalBar').style.width=avg+'%';
+ document.getElementById('homeLearning').innerHTML=data.learning.slice(0,6).map(x=>`<div class="row"><span>▢</span><div style="flex:1">${esc(x.title)}<div class="progress"><i style="width:${x.progress}%"></i></div></div><span class="meta">${x.progress}%</span></div>`).join('');
+ document.getElementById('homeVideos').innerHTML=data.videos.slice(0,4).map(x=>`<div class="row"><div class="thumb">🎬</div><div style="flex:1"><b>${esc(x.title)}</b><div class="meta">${esc(x.type)} · ${esc(x.length)}</div></div><span class="tag">${esc(x.status)}</span></div>`).join('');
+ document.getElementById('homeRecipes').innerHTML=data.recipes.slice(0,4).map(x=>`<div class="row"><div class="thumb">${x.emoji||'🍴'}</div><div style="flex:1"><b>${esc(x.title)}</b><div class="meta">${x.rating} · ${esc(x.time)}</div></div></div>`).join('');
+ document.getElementById('homeWish').innerHTML=data.wishes.slice(0,3).map(x=>`<div class="row"><div class="thumb">${x.emoji}</div><div><b>${esc(x.title)}</b><div class="meta">${esc(x.price)}</div></div><span style="margin-left:auto;color:#a45145">♥</span></div>`).join('');
+ document.getElementById('homeVault').innerHTML=data.vault.slice(0,5).map(x=>`<div class="row"><span>◉</span><div style="flex:1"><b>${esc(x.site)}</b><div class="meta">${esc(x.account)}</div></div></div>`).join('');
+ const sched=data.tasks.map(x=>`<span class="time">${esc(x.time)}</span><div class="event ${x.kind==='green'?'green':''} ${x.kind==='gold'?'gold':''}">${esc(x.title)}</div>`).join('');document.getElementById('schedule').innerHTML=sched;document.getElementById('plannerSchedule').innerHTML=sched;
+ document.getElementById('taskList').innerHTML=data.tasks.map((x,i)=>`<label class="check"><input type="checkbox" ${x.done?'checked':''} onchange="toggleTask(${i})"><span>${esc(x.title)} <small>${esc(x.time)}</small></span></label>`).join('');
+ document.getElementById('learningCards').innerHTML=data.learning.map((x,i)=>`<div class="card"><h3>${esc(x.title)}</h3><p>${esc(x.goal)}</p><div class="sub">Estimated ${x.hours} hours · ${x.progress}% complete</div><div class="bar"><i style="width:${x.progress}%"></i></div>${(x.items||[]).map((it,j)=>`<label class="check"><input type="checkbox" onchange="toast('Curriculum updated')"><span>${esc(it)}</span></label>`).join('')}<div class="actions"><button class="btn" onclick="deleteItem('learning',${i})">Delete</button></div></div>`).join('');
+ document.getElementById('videoCards').innerHTML=data.videos.map((x,i)=>`<div class="card"><div class="thumb" style="width:100%;height:120px;font-size:45px">🎬</div><h3>${esc(x.title)}</h3><p>${esc(x.type)} · ${esc(x.length)}</p><span class="tag">${esc(x.status)}</span><div class="actions"><button class="btn" onclick="openScriptFor(${i})">Script</button><button class="btn" onclick="deleteItem('videos',${i})">Delete</button></div></div>`).join('');
+ document.getElementById('recipeCards').innerHTML=data.recipes.map((x,i)=>`<div class="card"><div class="thumb" style="width:100%;height:150px;font-size:60px">${x.emoji||'🍴'}</div><h3>${esc(x.title)}</h3><p>${x.rating||'☆☆☆☆☆'} · ${esc(x.time)}</p><p>${esc(x.notes||'A recipe waiting to become a regular.')}</p><div class="actions"><button class="btn" onclick="deleteItem('recipes',${i})">Delete</button></div></div>`).join('');
+ document.getElementById('wishCards').innerHTML=data.wishes.map((x,i)=>`<div class="card"><div style="font-size:55px">${x.emoji}</div><h3>${esc(x.title)}</h3><p>${esc(x.price)}</p><span class="tag">Wishlist</span><div class="actions"><button class="btn" onclick="deleteItem('wishes',${i})">Delete</button></div></div>`).join('');
+ document.getElementById('vaultCards').innerHTML=data.vault.map((x,i)=>`<div class="card"><h3>◉ ${esc(x.site)}</h3><p>${esc(x.account)}</p><div class="sub">Password hidden in prototype</div><div class="actions"><button class="btn" onclick="deleteItem('vault',${i})">Delete</button></div></div>`).join('');
+ document.getElementById('reflectionCards').innerHTML=(data.reflections.length?data.reflections:[{month:'August 2026',learned:'AI、韓語學習、剪輯技巧',grateful:'遇見很多美好的人事物，讓我更確定自己的方向。',mood:'🙂'}]).map(x=>`<div class="card"><h3>${esc(x.month)}</h3><p><b>This month, I am grateful for...</b><br>${esc(x.grateful)}</p><p><b>What I learned</b><br>${esc(x.learned)}</p><div style="font-size:28px">${esc(x.mood||'🙂')}</div></div>`).join('');
+ document.getElementById('scriptArchive').innerHTML=data.scripts.length?data.scripts.map((x,i)=>`<div class="row"><div style="flex:1"><b>${esc(x.title)}</b><div class="meta">${esc(x.content).slice(0,100)}</div></div><button class="btn" onclick="deleteItem('scripts',${i})">Delete</button></div>`).join(''):'<div class="empty">No scripts yet. Your future masterpiece is suspiciously empty.</div>';
+ renderWeek();
+}
+function renderWeek(){
+ const days=['MON','TUE','WED','THU','FRI','SAT','SUN'];let h=days.map(d=>`<div class="head">${d}</div>`).join('');
+ for(let r=0;r<5;r++) for(let c=0;c<7;c++) h+=`<div>${(r===0&&c===2)?'✓':(r===1&&c===3)?'✓':(r===2&&c===5)?'✓':''}</div>`;
+ document.getElementById('weekMini').innerHTML=h;document.getElementById('weekLarge').innerHTML=h;
+}
+function toggleTask(i){data.tasks[i].done=!data.tasks[i].done;save()}
+function deleteItem(k,i){if(confirm('Delete this item?')){data[k].splice(i,1);save()}}
+function openScriptFor(i){openModal('script',data.videos[i].title)}
+function openModal(type,prefill=''){
+ const fields={
+ learning:`<h2>New Learning Goal 📚</h2><div class="formgrid"><div class="field"><label>Title</label><input id="f1" placeholder="例如：DaVinci Resolve"></div><div class="field"><label>Estimated time (hours)</label><input id="f2" type="number" value="20"></div><div class="field full"><label>Learning goal</label><textarea id="f3" placeholder="我希望最後能做到什麼？"></textarea></div><div class="field full"><label>Curriculum items（每行一項）</label><textarea id="f4" placeholder="介面認識&#10;剪輯基礎&#10;調色"></textarea></div><div class="field"><label>Progress %</label><input id="f5" type="number" min="0" max="100" value="0"></div></div><div class="actions"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="addLearning()">Create Goal</button></div>`,
+ video:`<h2>New Video Idea 🎬</h2><div class="formgrid"><div class="field"><label>Name</label><input id="f1"></div><div class="field"><label>Type</label><select id="f2"><option>VLOG</option><option>Travel</option><option>Lifestyle</option><option>Tutorial</option><option>Review</option><option>Story</option></select></div><div class="field"><label>Estimated length</label><input id="f3" placeholder="8–12 min"></div><div class="field"><label>Location & People</label><input id="f4" placeholder="Taichung · Me / Friends"></div><div class="field full"><label>Concept</label><textarea id="f5"></textarea></div></div><div class="actions"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="addVideo()">Create Idea</button></div>`,
+ recipe:`<h2>New Recipe 🍝</h2><div class="formgrid"><div class="field"><label>Recipe name</label><input id="f1"></div><div class="field"><label>Category</label><select id="f2"><option>Lunch</option><option>Dinner</option><option>Breakfast</option><option>Dessert</option><option>Snack</option><option>Drink</option></select></div><div class="field"><label>Total time</label><input id="f3" placeholder="30 min"></div><div class="field"><label>Rating</label><input id="f4" value="★★★★★"></div><div class="field full"><label>Ingredients（每行一項）</label><textarea id="f5" placeholder="義大利麵 200g&#10;蝦仁 150g&#10;奶油 20g"></textarea></div><div class="field full"><label>Steps</label><textarea id="f6" placeholder="1. ...&#10;2. ..."></textarea></div><div class="field"><label>Emoji cover</label><input id="f7" value="🍝"></div><div class="field"><label>Notes</label><input id="f8"></div></div><div class="actions"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="addRecipe()">Create Recipe</button></div>`,
+ task:`<h2>New Task / Event ☑</h2><div class="formgrid"><div class="field full"><label>Title</label><input id="f1"></div><div class="field"><label>Time</label><input id="f2" type="time" value="18:00"></div><div class="field"><label>Color</label><select id="f3"><option value="pink">Rose</option><option value="gold">Gold</option><option value="green">Sage</option><option value="blue">Blue</option><option value="purple">Lavender</option></select></div></div><div class="actions"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="addTask()">Add</button></div>`,
+ wish:`<h2>Add to Wishlist ♡</h2><div class="formgrid"><div class="field"><label>Item</label><input id="f1"></div><div class="field"><label>Price</label><input id="f2" placeholder="NT$"></div><div class="field"><label>Emoji</label><input id="f3" value="🛍️"></div><div class="field full"><label>Why I want it</label><textarea id="f4"></textarea></div></div><div class="actions"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="addWish()">Add</button></div>`,
+ reflection:`<h2>Monthly Reflection 🌙</h2><div class="formgrid"><div class="field"><label>Month</label><input id="f1" value="August 2026"></div><div class="field"><label>Mood</label><input id="f2" value="🙂"></div><div class="field full"><label>What I learned</label><textarea id="f3"></textarea></div><div class="field full"><label>What I am grateful for</label><textarea id="f4"></textarea></div></div><div class="actions"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="addReflection()">Save Reflection</button></div>`,
+ vault:`<h2>Personal Vault 🔐</h2><div class="field"><label>Service</label><input id="f1"></div><div class="field" style="margin-top:10px"><label>Account / username</label><input id="f2"></div><p class="sub" style="margin-top:12px">Prototype only: do not enter real passwords. A production version should use proper encryption and secure authentication.</p><div class="actions"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="addVault()">Add Account</button></div>`,
+ script:`<h2>Script ✍️</h2><div class="field"><label>Title</label><input id="f1" value="${esc(prefill)}"></div><div class="field" style="margin-top:10px"><label>Script</label><textarea id="f2" style="min-height:260px" placeholder="Opening...&#10;&#10;Chapter 01...&#10;&#10;Ending..."></textarea></div><div class="actions"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="addScript()">Save Script</button></div>`
+ };
+ document.getElementById('modal').innerHTML=fields[type];document.getElementById('modalBack').classList.add('show');
+}
+function closeModal(){document.getElementById('modalBack').classList.remove('show')}
+function val(id){return document.getElementById(id)?.value.trim()||''}
+function addLearning(){data.learning.push({title:val('f1')||'Untitled Goal',hours:+val('f2')||0,goal:val('f3'),progress:+val('f5')||0,items:val('f4').split('\\n').filter(Boolean)});closeModal();save()}
+function addVideo(){data.videos.push({title:val('f1')||'Untitled Video',type:val('f2'),length:val('f3'),status:'Idea',location:val('f4'),concept:val('f5')});closeModal();save()}
+function addRecipe(){data.recipes.push({title:val('f1')||'Untitled Recipe',time:val('f3'),rating:val('f4'),emoji:val('f7')||'🍴',notes:val('f8'),ingredients:val('f5'),steps:val('f6')});closeModal();save()}
+function addTask(){data.tasks.push({title:val('f1')||'Untitled Task',time:val('f2'),kind:val('f3'),done:false});data.tasks.sort((a,b)=>a.time.localeCompare(b.time));closeModal();save()}
+function addWish(){data.wishes.push({title:val('f1'),price:val('f2'),emoji:val('f3'),why:val('f4')});closeModal();save()}
+function addReflection(){data.reflections.unshift({month:val('f1'),mood:val('f2'),learned:val('f3'),grateful:val('f4')});closeModal();save()}
+function addVault(){data.vault.push({site:val('f1'),account:val('f2')});closeModal();save()}
+function addScript(){data.scripts.unshift({title:val('f1')||'Untitled Script',content:val('f2')});closeModal();save()}
+function quickAdd(){openModal('learning')}
+function editWeekly(){const title=prompt('What do you want to add to this week?');if(title){toast('Weekly plan item added: '+title)}}
+function addTravelNote(){const text=prompt('Travel note');if(!text)return;const el=document.createElement('div');el.className='sticky';el.textContent=text;el.style.left=(30+Math.random()*550)+'px';el.style.top=(30+Math.random()*350)+'px';el.style.transform=`rotate(${(Math.random()*6-3)}deg)`;el.draggable=true;document.getElementById('travelBoard').appendChild(el);makeDrag(el)}
+function addCanvasNote(){const text=prompt('Write a note');if(!text)return;const el=document.createElement('div');el.className='sticky';el.contentEditable=true;el.textContent=text;el.style.left=(20+Math.random()*650)+'px';el.style.top=(20+Math.random()*350)+'px';el.style.transform=`rotate(${(Math.random()*6-3)}deg)`;document.getElementById('canvasBoard').appendChild(el);makeDrag(el)}
+function makeDrag(el){let ox=0,oy=0;el.addEventListener('dragstart',e=>{ox=e.offsetX;oy=e.offsetY});el.addEventListener('dragend',e=>{el.style.left=(e.clientX-ox-250)+'px';el.style.top=(e.clientY-oy-90)+'px'})}
+document.querySelectorAll('.sticky').forEach(makeDrag);
+render();
+</script>
+</body>
+</html>
