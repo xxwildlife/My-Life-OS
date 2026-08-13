@@ -84,13 +84,29 @@ text-align:center;transform:rotate(1.5deg);box-shadow:var(--shadow)}
 }
 .time{color:#8c7a67}.event{padding:7px 10px;border-radius:8px;background:#ead4ca;border-left:4px solid var(--wine)}
 .event.green{background:#dfe8d7;border-left-color:var(--green)}.event.gold{background:#efe0bd;border-left-color:var(--gold)}
-.bottom{display:grid;grid-t.bottom{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:10px;align-items:start}emplate-c.bottom{
+.bottom{
   display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:10px;
-  margin-top:10px;
-  align-items:start;
-}olumns:repeat(5,1fr);gap:10px;margin-top:10px;align-items:start}
+  grid-template-columns:repeat(4, 1fr);
+  gap:12px;
+  margin-top:12px;
+  align-items:stretch;   /* 關鍵：讓四張卡片等高 */
+}
+
+.bottom .panel{
+  display:flex;
+  flex-direction:column;
+  min-height:280px;      /* 統一最小高度 */
+  height:100%;
+}
+
+.bottom .panel .list,
+.bottom .panel .quote{
+  flex:1;                /* 讓內容區自動撐開 */
+}
+
+.bottom .panel .add{
+  margin-top:auto;       /* 按鈕永遠貼在底部 */
+}
 .week{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;font-size:10px}.week div{padding:6px 2px;border:1px solid #e0d1bb;text-align:center;min-height:33px}
 .week .head{background:#eee2cf;font-weight:600;min-height:auto}
 .page{display:none}.page.active{display:block}
