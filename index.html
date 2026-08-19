@@ -2011,7 +2011,7 @@ function renderModal(){
           <div>
             <div class="sticky-note">
               <div class="small-cap" style="color:#6E5921;">My Note</div>
-              <textarea id="galleryNoteInput" data-bind="gallery.note.${al.id}.${ph.id}" placeholder="Write a memory, location, people, story…">${esc(ph.note)}</textarea>
+              <textarea id="galleryNoteInput" data-bind="gallery.note::${albumId}::${photoId}" placeholder="Write a memory, location, people, story…">${esc(ph.note)}</textarea>
             </div>
             <button class="btn btn-primary mt12" data-action="gallery-save-note" data-id="${al.id}" data-id2="${ph.id}">Save Note ✓</button>
             <button class="btn btn-danger mt8" data-action="gallery-delete-photo" data-id="${al.id}" data-id2="${ph.id}">Delete Photo</button>
