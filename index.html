@@ -1711,7 +1711,7 @@ function renderModal(){
     </div>`;
   }
   if(md.type==='quickadd'){
-    const kinds = [['task','Task'],['goal','Learning Goal'],['idea','Video Idea'],['recipe','Recipe'],['trip','Trip'],['event','Calendar Event'],['note','Note']];
+    const kinds = [['task','To-Do'],['goal','Learning Goal'],['idea','Video Idea'],['recipe','Recipe'],['trip','Trip'],['event','Calendar'],['note','Note']];
     return `<div class="overlay" data-action="close-modal">
       <div class="modal" onclick="event.stopPropagation()">
         <h3>Quick Add</h3>
