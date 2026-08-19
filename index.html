@@ -254,33 +254,6 @@ label.flabel{ font-family:var(--font-ui); font-size:11.5px; letter-spacing:0.04e
 .cal-day .num{ font-family:var(--font-ui); font-size:12px; font-weight:600; color:var(--ink-soft); }
 .cal-day .evt{ font-size:10.5px; background:var(--verdigris); color:var(--paper); border-radius:4px; padding:1px 5px; margin-top:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .cal-nav{ display:flex; align-items:center; gap:10px; }
-.cal-dow.weekend{ color:var(--oxblood); font-weight:700; }
-.cal-day.weekend{ background:#DDD0B5; }
-.cal-day.weekend:hover{ background:#CFC0A1; }
-.cal-day.selected-date{ border-color:var(--verdigris); box-shadow:0 0 0 2px rgba(76,107,92,0.18) inset; }
-
-.gallery-toolbar{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
-.gallery-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:14px; }
-.gallery-card{ background:var(--paper); border:1px solid var(--line); border-radius:10px; overflow:hidden; box-shadow:var(--shadow); cursor:pointer; transition:transform .15s ease, box-shadow .15s ease; }
-.gallery-card:hover{ transform:translateY(-2px); box-shadow:var(--shadow-lg); }
-.gallery-thumb{ aspect-ratio:4/3; width:100%; object-fit:cover; display:block; background:var(--parchment); }
-.gallery-meta{ padding:10px 12px 12px; }
-.gallery-meta .name{ font-family:var(--font-display); font-size:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.gallery-meta .date{ font-family:var(--font-ui); font-size:10.5px; color:var(--ink-soft); margin-top:3px; }
-.gallery-empty{ padding:34px 20px; text-align:center; border:1.5px dashed var(--parchment-shadow); border-radius:10px; }
-.album-list{ display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:12px; }
-.album-card{ background:var(--parchment); border:1px solid var(--line); border-radius:10px; padding:14px; cursor:pointer; transition:.15s ease; }
-.album-card:hover{ background:var(--parchment-deep); transform:translateY(-1px); }
-.album-card.active{ border-color:var(--verdigris); box-shadow:0 0 0 2px rgba(76,107,92,.12) inset; }
-.album-title{ font-family:var(--font-display); font-size:18px; }
-.gallery-photo-layout{ display:grid; grid-template-columns:minmax(0,1fr) 260px; gap:18px; align-items:start; }
-.gallery-photo-view{ background:#241a10; border-radius:10px; min-height:50vh; display:flex; align-items:center; justify-content:center; padding:10px; }
-.gallery-photo-view img{ max-width:100%; max-height:72vh; object-fit:contain; border-radius:6px; }
-.sticky-note{ background:#F4E6A8; color:#4A3A17; border:1px solid rgba(90,76,56,.15); padding:14px; min-height:220px; box-shadow:4px 6px 16px rgba(42,33,21,.14); transform:rotate(-1deg); }
-.sticky-note textarea{ background:transparent; border:none; resize:vertical; min-height:160px; width:100%; color:inherit; outline:none; font-family:var(--font-body); font-size:15px; }
-.gallery-sort{ display:flex; align-items:center; gap:8px; font-family:var(--font-ui); font-size:12px; }
-@media(max-width:760px){ .gallery-photo-layout{grid-template-columns:1fr;} .gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr));} }
-
 
 /* ---------- Weekly plan ---------- */
 .week-grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:12px; }
@@ -367,8 +340,6 @@ function defaultDB(){
     trips: [],
     monthlyReviews: {},   // 'YYYY-MM' -> {...}
     moods: [],            // {id,date,mood,note,tags}
-    journals: [],         // {id,date,title,content,updatedAt}
-    galleryAlbums: [],    // {id,name,createdAt,updatedAt,photos:[{id,name,date,note,blobKey}]}
     quickNote: '',
     ytTypes: ['Vlog','Travel','Tutorial','Lifestyle','Story','Review','Other']
   };
@@ -408,85 +379,6 @@ function toast(msg){
   setTimeout(()=>t.remove(), 2400);
 }
 
-/* ---------------- Gallery storage (IndexedDB) ---------------- */
-let galleryDbPromise = null;
-function openGalleryDB(){
-  if(!('indexedDB' in window)) return Promise.reject(new Error('IndexedDB unavailable'));
-  if(galleryDbPromise) return galleryDbPromise;
-  galleryDbPromise = new Promise((resolve,reject)=>{
-    const req = indexedDB.open('lifeos_gallery_v1',1);
-    req.onupgradeneeded = () => {
-      const idb = req.result;
-      if(!idb.objectStoreNames.contains('images')) idb.createObjectStore('images');
-    };
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
-  });
-  return galleryDbPromise;
-}
-function idbPutImage(key, blob){
-  return openGalleryDB().then(idb=>new Promise((resolve,reject)=>{
-    const tx=idb.transaction('images','readwrite'); tx.objectStore('images').put(blob,key);
-    tx.oncomplete=resolve; tx.onerror=()=>reject(tx.error);
-  }));
-}
-function idbGetImage(key){
-  return openGalleryDB().then(idb=>new Promise((resolve,reject)=>{
-    const tx=idb.transaction('images','readonly'); const req=tx.objectStore('images').get(key);
-    req.onsuccess=()=>resolve(req.result||null); req.onerror=()=>reject(req.error);
-  }));
-}
-function idbDeleteImage(key){
-  return openGalleryDB().then(idb=>new Promise((resolve,reject)=>{
-    const tx=idb.transaction('images','readwrite'); tx.objectStore('images').delete(key);
-    tx.oncomplete=resolve; tx.onerror=()=>reject(tx.error);
-  }));
-}
-function findGalleryAlbum(id){ return db.galleryAlbums.find(a=>a.id===id); }
-function findGalleryPhoto(albumId,photoId){
-  const a=findGalleryAlbum(albumId);
-  return a ? a.photos.find(p=>p.id===photoId) : null;
-}
-function addGalleryAlbum(name){
-  const now=Date.now();
-  const a={id:uid(),name:(name||'New Album').trim()||'New Album',createdAt:now,updatedAt:now,photos:[]};
-  db.galleryAlbums.unshift(a); persist(); return a;
-}
-function galleryPhotoSort(photos,mode){
-  return [...photos].sort((a,b)=> mode==='name'
-    ? a.name.localeCompare(b.name,undefined,{numeric:true,sensitivity:'base'})
-    : (b.date||'').localeCompare(a.date||''));
-}
-async function saveGalleryFiles(albumId,files){
-  const album=findGalleryAlbum(albumId);
-  if(!album || !files.length) return;
-  const remaining=500-album.photos.length;
-  if(remaining<=0){ toast('This album has reached the 500-photo limit.'); return; }
-  const batch=[...files].filter(f=>f.type.startsWith('image/')).slice(0,remaining);
-  for(const file of batch){
-    const id=uid(), key=albumId+'__'+id;
-    await idbPutImage(key,file);
-    album.photos.push({id,name:file.name,date:new Date().toISOString(),note:'',blobKey:key});
-  }
-  album.updatedAt=Date.now(); persist(); render();
-  toast(`${batch.length} photo${batch.length>1?'s':''} added`);
-}
-async function hydrateGalleryImages(){
-  document.querySelectorAll('[data-gallery-key]').forEach(async img=>{
-    try{
-      const blob=await idbGetImage(img.getAttribute('data-gallery-key'));
-      if(blob){ const url=URL.createObjectURL(blob); img.src=url; img.onload=()=>URL.revokeObjectURL(url); }
-    }catch(e){ console.error('Gallery image load failed',e); }
-  });
-  const modalImg=document.querySelector('[data-gallery-modal-key]');
-  if(modalImg){
-    try{
-      const blob=await idbGetImage(modalImg.getAttribute('data-gallery-modal-key'));
-      if(blob) modalImg.src=URL.createObjectURL(blob);
-    }catch(e){ console.error('Gallery modal image load failed',e); }
-  }
-}
-
 /* ---------------- UI transient state (not persisted data, but route/drawer live in the URL) ---------------- */
 const ui = {
   sidebarOpen:false,
@@ -495,9 +387,7 @@ const ui = {
   calMonth: todayISO().slice(0,7), // 'YYYY-MM'
   weekStart: getWeekStart(todayISO()),
   wishFilter: 'all',
-  searchQuery: '',
-  gallerySort: 'date',
-  galleryAlbumSort: 'date'
+  searchQuery: ''
 };
 
 function getWeekStart(iso){
@@ -627,16 +517,6 @@ function setMoodForDate(date, mood){
   else m.mood=mood;
   persist();
 }
-function getJournalForDate(date){
-  let j=db.journals.find(x=>x.date===date);
-  if(!j){ j={id:uid(),date,title:'',content:'',updatedAt:Date.now()}; db.journals.unshift(j); persist(); }
-  return j;
-}
-function saveJournal(date,title,content){
-  const j=getJournalForDate(date);
-  j.title=title; j.content=content; j.updatedAt=Date.now();
-  persist(); toast('Journal saved ✓'); render();
-}
 
 /* ============================================================
    GLOBAL SEARCH
@@ -661,9 +541,6 @@ function globalSearch(q){
   db.trips.forEach(t=>{
     if((t.name+t.destination).toLowerCase().includes(q)) res.push({kind:'Trip', title:t.name, snippet:t.destination, hash:`#/travel/${t.id}`});
   });
-  db.galleryAlbums.forEach(a=>{
-    if(a.name.toLowerCase().includes(q)) res.push({kind:'Gallery', title:a.name, snippet:`${a.photos.length} photos`, hash:`#/gallery/album/${a.id}`});
-  });
   if(db.quickNote && db.quickNote.toLowerCase().includes(q)) res.push({kind:'Note', title:'Quick Note', snippet:db.quickNote.slice(0,80), hash:'#/dashboard'});
   return res;
 }
@@ -673,7 +550,6 @@ function globalSearch(q){
    ============================================================ */
 const NAV_ITEMS=[
   {seg:'dashboard', ic:'◈', label:'Dashboard'},
-  {seg:'gallery', ic:'▧', label:'Gallery'},
   {seg:'learning', ic:'✎', label:'Learning'},
   {seg:'youtube', ic:'▶', label:'YouTube Studio'},
   {seg:'recipes', ic:'❧', label:'Recipes'},
@@ -696,11 +572,11 @@ function sidebarHTML(route){
       <div class="nav-group-label">Overview</div>
       ${navLink(NAV_ITEMS[0],top)}
       <div class="nav-group-label">Create</div>
-      ${NAV_ITEMS.slice(2,5).map(n=>navLink(n,top)).join('')}
+      ${NAV_ITEMS.slice(1,4).map(n=>navLink(n,top)).join('')}
       <div class="nav-group-label">Organize</div>
-      ${NAV_ITEMS.slice(5,9).map(n=>navLink(n,top)).join('')}
+      ${NAV_ITEMS.slice(4,8).map(n=>navLink(n,top)).join('')}
       <div class="nav-group-label">Reflect</div>
-      ${NAV_ITEMS.slice(9).map(n=>navLink(n,top)).join('')}
+      ${NAV_ITEMS.slice(8).map(n=>navLink(n,top)).join('')}
     </nav>
     <div class="foot">Renaissance Studio · Personal Edition</div>
   </div>
@@ -712,7 +588,7 @@ function navLink(n,top){
 }
 function bottomNavHTML(route){
   const top = route[0]||'dashboard';
-  const items = [NAV_ITEMS[0],NAV_ITEMS[1],NAV_ITEMS[3],NAV_ITEMS[5],NAV_ITEMS[7]];
+  const items = [NAV_ITEMS[0],NAV_ITEMS[1],NAV_ITEMS[2],NAV_ITEMS[4],NAV_ITEMS[6]];
   return `<div class="bottom-nav">${items.map(n=>`<a href="#/${n.seg}" class="${top===n.seg?'active':''}"><span class="ic">${n.ic}</span>${esc(n.label.split(' ')[0])}</a>`).join('')}</div>`;
 }
 function topbarHTML(){
@@ -739,7 +615,6 @@ function render(){
   let pageHTML='';
   try{
     if(page==='dashboard') pageHTML = renderDashboard();
-    else if(page==='gallery') pageHTML = renderGallery(route);
     else if(page==='learning') pageHTML = renderLearning(route);
     else if(page==='youtube') pageHTML = renderYoutube(route);
     else if(page==='recipes') pageHTML = renderRecipes(route);
@@ -795,12 +670,6 @@ function wireInputs(){
   });
   const tripCover = document.getElementById('tripCoverInput');
   if(tripCover){ bindImageFile(tripCover, dataUrl=>{ const t=findTrip(tripCover.getAttribute('data-tid')); if(t) t.cover=dataUrl; }); }
-  const galleryUpload = document.getElementById('galleryUploadInput');
-  if(galleryUpload){
-    const albumId = currentRoute()[2];
-    galleryUpload.addEventListener('change', ()=>{ if(galleryUpload.files.length) saveGalleryFiles(albumId,galleryUpload.files); });
-  }
-  hydrateGalleryImages();
 }
 
 function findGoal(id){ return db.learningGoals.find(g=>g.id===id); }
@@ -909,15 +778,6 @@ function handleBind(el, e){
     if(!m){ m={id:uid(),date,mood:'',note:'',tags:[]}; db.moods.push(m); }
     m.note = val; persistDebounced(); return;
   }
-  if(key.startsWith('journal.')){
-    const date=parts[1]; const j=getJournalForDate(date); const field=key.split('.')[1];
-    j[field]=val; j.updatedAt=Date.now(); persistDebounced(); return;
-  }
-  if(key.startsWith('gallery.note.')){
-    const albumId=parts[1], photoId=parts[2]; const ph=findGalleryPhoto(albumId,photoId);
-    if(ph){ ph.note=val; const al=findGalleryAlbum(albumId); if(al) al.updatedAt=Date.now(); persistDebounced(); }
-    return;
-  }
 }
 
 /* Image file -> dataURL for cover/recipe images */
@@ -985,7 +845,7 @@ document.addEventListener('click', (e)=>{
     case 'remove-recipe-image': { const r=findRecipe(id); if(r){ r.image=''; persist(); render(); } break; }
 
     /* ---- Tasks / Calendar ---- */
-    case 'add-task-quick': { addTask({title:'New Task', dueDate:t.getAttribute('data-date')||''}); render(); break; }
+    case 'add-task-quick': { addTask({title:'New Task'}); render(); break; }
     case 'toggle-task': { const tk=findTask(id); if(tk){ tk.completed=!tk.completed; persist(); render(); } break; }
     case 'delete-task': { deleteTask(id); render(); break; }
     case 'cal-prev-month': shiftCalMonth(-1); render(); break;
@@ -1003,40 +863,6 @@ document.addEventListener('click', (e)=>{
     case 'week-add-item': { const wp=getWeekPlan(ui.weekStart); wp[id].push({id:uid(),text:'New item',done:false}); persist(); render(); break; }
     case 'week-toggle-item': { const wp=getWeekPlan(ui.weekStart); const it=wp[id].find(x=>x.id===id2); if(it){ it.done=!it.done; persist(); render(); } break; }
     case 'week-delete-item': { const wp=getWeekPlan(ui.weekStart); wp[id]=wp[id].filter(x=>x.id!==id2); persist(); render(); break; }
-
-    /* ---- Gallery ---- */
-    case 'create-gallery-album': {
-      const name=prompt('Album name:','New Album');
-      if(name && name.trim()){ const a=addGalleryAlbum(name); nav(`#/gallery/album/${a.id}`); }
-      break;
-    }
-    case 'open-gallery-album': { nav(`#/gallery/album/${id}`); break; }
-    case 'gallery-sort': { ui.gallerySort=t.getAttribute('data-val')||'date'; render(); break; }
-    case 'gallery-album-sort': { ui.galleryAlbumSort=t.getAttribute('data-val')||'date'; render(); break; }
-    case 'gallery-open-photo': { ui.modal={type:'galleryPhoto',albumId:id,photoId:id2}; render(); break; }
-    case 'gallery-delete-photo': {
-      const ph=findGalleryPhoto(id,id2); const al=findGalleryAlbum(id);
-      if(ph&&al){
-        idbDeleteImage(ph.blobKey).catch(()=>{});
-        al.photos=al.photos.filter(x=>x.id!==id2); al.updatedAt=Date.now(); persist(); ui.modal=null; render();
-      }
-      break;
-    }
-    case 'gallery-delete-album': {
-      const al=findGalleryAlbum(id);
-      if(al){ Promise.all(al.photos.map(p=>idbDeleteImage(p.blobKey).catch(()=>{}))).finally(()=>{ db.galleryAlbums=db.galleryAlbums.filter(x=>x.id!==id); persist(); nav('#/gallery'); }); }
-      break;
-    }
-    case 'gallery-save-note': {
-      const ph=findGalleryPhoto(id,id2); const inp=document.getElementById('galleryNoteInput');
-      if(ph&&inp){ ph.note=inp.value; const al=findGalleryAlbum(id); if(al) al.updatedAt=Date.now(); persist(); toast('Note saved ✓'); render(); ui.modal={type:'galleryPhoto',albumId:id,photoId:id2}; render(); }
-      break;
-    }
-    case 'gallery-upload': {
-      const al=findGalleryAlbum(id); const input=document.getElementById('galleryUploadInput');
-      if(al&&input&&input.files.length) saveGalleryFiles(id,input.files);
-      break;
-    }
 
     /* ---- Wishlist ---- */
     case 'add-wish': addWishItem(); render(); break;
@@ -1057,13 +883,6 @@ document.addEventListener('click', (e)=>{
 
     /* ---- Mood ---- */
     case 'set-mood': setMoodForDate(id, t.getAttribute('data-val')); render(); break;
-    case 'save-journal': {
-      const j=getJournalForDate(id);
-      const title=document.querySelector('[data-bind="journal.title::'+id+'"]')?.value || '';
-      const content=document.querySelector('[data-bind="journal.content::'+id+'"]')?.value || '';
-      saveJournal(id,title,content);
-      break;
-    }
 
     /* ---- Search ---- */
     case 'do-search': doSearchSubmit(); break;
@@ -1479,17 +1298,14 @@ function renderCalendar(route){
   const daysInMonth = new Date(y, m, 0).getDate();
   const monthLabel = first.toLocaleDateString('en-US',{month:'long',year:'numeric'});
   const today = todayISO();
-  const selectedDate = route[1]==='day' ? route[2] : '';
 
   let cells = '';
   for(let i=0;i<startDow;i++) cells += `<div class="cal-day empty"></div>`;
   for(let d=1; d<=daysInMonth; d++){
     const iso = `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const dow = new Date(iso+'T00:00:00').getDay();
-    const isWeekend = dow===0 || dow===6;
     const dayEvents = db.events.filter(e=>e.date===iso);
     const dayTasks = db.tasks.filter(t=>t.dueDate===iso);
-    cells += `<div class="cal-day ${iso===today?'today ':''}${isWeekend?'weekend ':''}${iso===selectedDate?'selected-date':''}" data-action="open-day-modal" data-id="${iso}">
+    cells += `<div class="cal-day ${iso===today?'today':''}" data-action="open-day-modal" data-id="${iso}">
       <div class="num">${d}</div>
       ${dayEvents.slice(0,2).map(e=>`<div class="evt">${esc(e.title)}</div>`).join('')}
       ${dayTasks.length? `<div class="evt" style="background:var(--oxblood);">${dayTasks.length} task${dayTasks.length>1?'s':''}</div>`:''}
@@ -1500,12 +1316,10 @@ function renderCalendar(route){
   const allOpenTasks = db.tasks.filter(t=>!t.completed).sort((a,b)=>(a.dueDate||'9999').localeCompare(b.dueDate||'9999'));
   const doneTasks = db.tasks.filter(t=>t.completed);
   const completionPct = db.tasks.length? Math.round((doneTasks.length/db.tasks.length)*100) : 0;
-  const selectedTasks = selectedDate ? db.tasks.filter(t=>t.dueDate===selectedDate) : [];
 
   return `
   <div class="page-header">
-    <div><div class="page-eyebrow">Organize</div><div class="page-title">Calendar &amp; Tasks</div>
-    ${selectedDate?`<div class="page-sub">Tasks for ${fmtDate(selectedDate)}</div>`:''}</div>
+    <div><div class="page-eyebrow">Organize</div><div class="page-title">Calendar &amp; Tasks</div></div>
   </div>
   <div class="grid cols-3">
     <div class="panel" style="grid-column:span 2;">
@@ -1518,46 +1332,41 @@ function renderCalendar(route){
         <button class="btn btn-ghost btn-sm" data-action="cal-today">Today</button>
       </div>
       <div class="cal-grid">
-        ${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map((d,i)=>`<div class="cal-dow ${i>=5?'weekend':''}">${d}</div>`).join('')}
+        ${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d=>`<div class="cal-dow">${d}</div>`).join('')}
         ${cells}
       </div>
-      <div class="fine mt12">Click any day to add/view events and jump to that day's To-do list.</div>
+      <div class="fine mt12">Click any day to add or view events.</div>
     </div>
     <div class="panel">
       <div class="panel-title">Task Completion</div>
       <div class="progress-row"><div class="progress-track" style="flex:1"><div class="progress-fill" style="width:${completionPct}%"></div></div><div class="progress-pct">${completionPct}%</div></div>
       <div class="fine mt8">${doneTasks.length} / ${db.tasks.length} tasks complete</div>
-      ${selectedDate?`<div class="fine mt12">${selectedTasks.filter(t=>t.completed).length} / ${selectedTasks.length} complete for ${fmtDateShort(selectedDate)}</div>`:''}
     </div>
   </div>
 
-  <div class="panel mt20" id="todoList">
-    <div class="panel-title">
-      <div>To-do ${selectedDate?`· <span class="pill pill-gold">${fmtDateShort(selectedDate)}</span>`:''}</div>
-      <button class="btn btn-ghost btn-sm" data-action="add-task-quick" data-date="${selectedDate||''}">+ Add Task</button>
-    </div>
-    ${selectedDate?`<div class="fine mb12">This list is connected to the calendar. Tasks with a due date appear on their calendar day and count toward completion.</div>`:''}
-    ${allOpenTasks.length===0 && doneTasks.length===0? `<div class="empty-state" style="padding:24px;"><div class="msg" style="font-size:14px;">No tasks yet</div><button class="btn btn-primary btn-sm" data-action="add-task-quick" data-date="${selectedDate||''}">+ Add Task</button></div>` : `
-    ${selectedDate ? (selectedTasks.length ? selectedTasks : []).map(tk=>taskRowHTML(tk)).join('') :
-      allOpenTasks.concat(doneTasks).map(tk=>taskRowHTML(tk)).join('')}
-    ${selectedDate && selectedTasks.length===0 ? `<div class="empty-state" style="padding:24px;"><div class="msg" style="font-size:14px;">No tasks for this date</div><button class="btn btn-primary btn-sm" data-action="add-task-quick" data-date="${selectedDate}">+ Add Task for this date</button></div>`:''}
+  <div class="panel mt20">
+    <div class="panel-title">To-do <button class="btn btn-ghost btn-sm" data-action="add-task-quick">+ Add Task</button></div>
+    ${allOpenTasks.length===0 && doneTasks.length===0? `<div class="empty-state" style="padding:24px;"><div class="msg" style="font-size:14px;">No tasks yet</div><button class="btn btn-primary btn-sm" data-action="add-task-quick">+ Add Task</button></div>` : `
+    ${allOpenTasks.concat(doneTasks).map(tk=>`
+      <div class="item-row">
+        <input type="checkbox" class="checkbox" ${tk.completed?'checked':''} data-action="toggle-task" data-id="${tk.id}">
+        <div class="txt ${tk.completed?'done':''}" contenteditable="true" data-bind="task.title::${tk.id}" data-bind-blur="1" style="flex:2;">${esc(tk.title)}</div>
+        <select class="field" style="width:110px;" data-bind="task.priority::${tk.id}">
+          ${['Low','Normal','High'].map(p=>`<option ${tk.priority===p?'selected':''}>${p}</option>`).join('')}
+        </select>
+        <input type="date" class="field" style="width:150px;" value="${tk.dueDate||''}" data-bind="task.dueDate::${tk.id}">
+        <input type="text" class="field" style="width:130px;" placeholder="category" value="${esc(tk.category)}" data-bind="task.category::${tk.id}">
+        <div class="row-actions"><button class="icon-btn" data-action="delete-task" data-id="${tk.id}">✕</button></div>
+      </div>
+    `).join('')}
     `}
   </div>
   `;
 }
-function taskRowHTML(tk){
-  return `<div class="item-row">
-    <input type="checkbox" class="checkbox" ${tk.completed?'checked':''} data-action="toggle-task" data-id="${tk.id}">
-    <div class="txt ${tk.completed?'done':''}" contenteditable="true" data-bind="task.title::${tk.id}" data-bind-blur="1" style="flex:2;">${esc(tk.title)}</div>
-    <select class="field" style="width:110px;" data-bind="task.priority::${tk.id}">
-      ${['Low','Normal','High'].map(p=>`<option ${tk.priority===p?'selected':''}>${p}</option>`).join('')}
-    </select>
-    <input type="date" class="field" style="width:150px;" value="${tk.dueDate||''}" data-bind="task.dueDate::${tk.id}">
-    <input type="text" class="field" style="width:130px;" placeholder="category" value="${esc(tk.category)}" data-bind="task.category::${tk.id}">
-    <div class="row-actions"><button class="icon-btn" data-action="delete-task" data-id="${tk.id}">✕</button></div>
-  </div>`;
-}
 
+/* ============================================================
+   PAGE: WEEKLY PLAN
+   ============================================================ */
 function renderWeekly(route){
   const wp = getWeekPlan(ui.weekStart);
   const prog = weekProgress(ui.weekStart);
@@ -1775,8 +1584,6 @@ function renderMood(){
   const recent = [...db.moods].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,14);
   const today = todayISO();
   const todaysMood = db.moods.find(m=>m.date===today);
-  const journal = getJournalForDate(today);
-  const journals = [...db.journals].filter(j=>j.content||j.title).sort((a,b)=>b.date.localeCompare(a.date)).slice(0,10);
 
   return `
   <div class="page-header">
@@ -1787,8 +1594,7 @@ function renderMood(){
     <div class="mood-picker">
       ${MOOD_OPTS.map(m=>`<button class="mood-opt ${todaysMood&&todaysMood.mood===m.v?'selected':''}" data-action="set-mood" data-id="${today}" data-val="${m.v}" title="${m.label}">${m.e}</button>`).join('')}
     </div>
-    <textarea class="field mt12" rows="3" placeholder="How are you feeling? Your note will be saved automatically…" data-bind="mood.note::${today}">${esc(todaysMood?todaysMood.note:'')}</textarea>
-    <div class="fine mt8">Mood and notes save automatically as you type.</div>
+    ${todaysMood? `<textarea class="field mt12" rows="2" placeholder="Optional note…" data-bind="mood.note::${today}">${esc(todaysMood.note)}</textarea>` : ''}
   </div>
 
   <div class="grid cols-2 mt20">
@@ -1797,7 +1603,6 @@ function renderMood(){
       ${thisMonth.length===0? `<div class="fine">No mood entries yet this month.</div>` : MOOD_OPTS.map(o=>`
         <div class="item-row"><div style="width:26px;">${o.e}</div><div class="txt">${o.label}</div><div class="fine">${freq[o.v]}</div></div>
       `).join('')}
-      <div class="fine mt12">Days logged this month: ${thisMonth.length}</div>
     </div>
     <div class="panel">
       <div class="panel-title">Recent Entries</div>
@@ -1807,92 +1612,12 @@ function renderMood(){
       }).join('')}
     </div>
   </div>
-
-  <div class="grid cols-2 mt20">
-    <div class="panel">
-      <div class="panel-title">Daily Journal <span class="pill pill-gold">${fmtDateShort(today)}</span></div>
-      <div class="field-group"><label class="flabel">Title</label><input class="field" value="${esc(journal.title)}" placeholder="Today's title…" data-bind="journal.title::${today}"></div>
-      <div class="field-group"><label class="flabel">Diary</label><textarea class="field" rows="9" placeholder="Write anything you want to remember…" data-bind="journal.content::${today}">${esc(journal.content)}</textarea></div>
-      <button class="btn btn-primary" data-action="save-journal" data-id="${today}">Save Journal ✓</button>
-    </div>
-    <div class="panel">
-      <div class="panel-title">Journal Book</div>
-      ${journals.length===0?`<div class="empty-state" style="padding:24px;"><div class="msg" style="font-size:14px;">Your saved journal entries will live here.</div></div>`:
-      journals.map(j=>`<div class="item-row"><div class="txt"><b>${j.title?esc(j.title):'Untitled Journal'}</b><div class="fine">${fmtDate(j.date)}${j.content?' · '+esc(j.content.slice(0,70)):''}</div></div></div>`).join('')}
-    </div>
-  </div>
   `;
 }
 
 /* ============================================================
-   PAGE: GALLERY
+   PAGE: SEARCH
    ============================================================ */
-function renderGallery(route){
-  const albumId=route[1]==='album'?route[2]:null;
-  const albums=[...db.galleryAlbums].sort((a,b)=> ui.galleryAlbumSort==='name'
-    ? a.name.localeCompare(b.name,undefined,{sensitivity:'base'})
-    : b.updatedAt-a.updatedAt);
-  const album=findGalleryAlbum(albumId);
-  const photos=album ? galleryPhotoSort(album.photos,ui.gallerySort) : [];
-
-  return `
-  <div class="page-header">
-    <div><div class="page-eyebrow">Overview</div><div class="page-title">Gallery</div><div class="page-sub">Unlimited albums · up to 500 photos per album</div></div>
-  </div>
-
-  <div class="panel">
-    <div class="gallery-toolbar">
-      <div class="panel-title" style="margin:0;">Albums</div>
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-        <div class="gallery-sort">Sort
-          <select class="field" style="width:130px;" onchange="ui.galleryAlbumSort=this.value; render();">
-            <option value="date" ${ui.galleryAlbumSort==='date'?'selected':''}>Recently updated</option>
-            <option value="name" ${ui.galleryAlbumSort==='name'?'selected':''}>Name</option>
-          </select>
-        </div>
-        <button class="btn btn-primary" data-action="create-gallery-album">+ New Album</button>
-      </div>
-    </div>
-    <div class="album-list mt16">
-      ${albums.length===0?`<div class="album-card" style="grid-column:1/-1;"><div class="album-title">Your first album</div><div class="fine mt8">Create an album, then upload photos.</div></div>`:
-      albums.map(a=>`<div class="album-card ${albumId===a.id?'active':''}" data-action="open-gallery-album" data-id="${a.id}">
-        <div class="album-title">${esc(a.name)}</div>
-        <div class="fine mt8">${a.photos.length} photo${a.photos.length===1?'':'s'} · updated ${fmtDateShort(new Date(a.updatedAt).toISOString().slice(0,10))}</div>
-      </div>`).join('')}
-    </div>
-  </div>
-
-  ${album?`
-  <div class="panel mt20">
-    <div class="gallery-toolbar">
-      <div>
-        <div class="panel-title" style="margin:0;">${esc(album.name)}</div>
-        <div class="fine">${album.photos.length} / 500 photos</div>
-      </div>
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-        <div class="gallery-sort">Sort
-          <select class="field" style="width:120px;" onchange="ui.gallerySort=this.value; render();">
-            <option value="date" ${ui.gallerySort==='date'?'selected':''}>Date</option>
-            <option value="name" ${ui.gallerySort==='name'?'selected':''}>Name</option>
-          </select>
-        </div>
-        <input id="galleryUploadInput" type="file" accept="image/*" multiple hidden>
-        <button class="btn btn-primary" onclick="document.getElementById('galleryUploadInput').click()">＋ Upload Photos</button>
-        <button class="btn btn-danger" data-action="gallery-delete-album" data-id="${album.id}">Delete Album</button>
-      </div>
-    </div>
-    <div class="gallery-grid mt16">
-      ${photos.length===0?`<div class="gallery-empty" style="grid-column:1/-1;"><div class="msg">No photos yet</div><div class="fine">Upload your first photos to this album.</div></div>`:
-      photos.map(ph=>`<div class="gallery-card" data-action="gallery-open-photo" data-id="${album.id}" data-id2="${ph.id}">
-        <img class="gallery-thumb" loading="lazy" alt="${esc(ph.name)}" data-gallery-key="${ph.blobKey}">
-        <div class="gallery-meta"><div class="name">${esc(ph.name)}</div><div class="date">${fmtDate(ph.date.slice(0,10))}${ph.note?' · 📝':''}</div></div>
-      </div>`).join('')}
-    </div>
-  </div>
-  `:''}
-  `;
-}
-
 function renderSearch(route){
   const q = decodeURIComponent(route[1]||'');
   ui.searchQuery = q;
@@ -1968,12 +1693,10 @@ function renderModal(){
   if(md.type==='day'){
     const date = md.date;
     const dayEvents = db.events.filter(e=>e.date===date);
-    const dayTasks = db.tasks.filter(t=>t.dueDate===date);
     return `<div class="overlay" data-action="close-modal">
       <div class="modal modal-lg" onclick="event.stopPropagation()">
         <h3>${fmtDate(date)}</h3>
-        <div class="small-cap">Events</div>
-        ${dayEvents.length===0? `<div class="fine mt8">No events yet.</div>` : dayEvents.map(e=>`
+        ${dayEvents.length===0? `<div class="fine">No events yet.</div>` : dayEvents.map(e=>`
           <div class="item-row">
             <input type="checkbox" class="checkbox" ${e.done?'checked':''} data-action="toggle-event-done" data-id="${e.id}">
             <input class="field" style="width:90px;" value="${esc(e.time)}" placeholder="time" data-bind="event.time::${e.id}">
@@ -1983,45 +1706,12 @@ function renderModal(){
           </div>
         `).join('')}
         <button class="btn btn-primary mt12" data-action="add-event-for-day" data-id="${date}">+ Add Event</button>
-
-        <hr class="divider">
-        <div class="small-cap">To-do for this date</div>
-        ${dayTasks.length?dayTasks.map(tk=>`
-          <div class="item-row">
-            <input type="checkbox" class="checkbox" ${tk.completed?'checked':''} data-action="toggle-task" data-id="${tk.id}">
-            <div class="txt ${tk.completed?'done':''}">${esc(tk.title)}</div>
-          </div>`).join(''):`<div class="fine mt8">No tasks for this date.</div>`}
-        <div style="display:flex;gap:8px;flex-wrap:wrap;" class="mt12">
-          <button class="btn btn-ghost" data-action="add-task-quick" data-date="${date}">+ Add Task for ${fmtDateShort(date)}</button>
-          <a class="btn btn-primary" href="#/calendar/day/${date}" data-action="close-modal">Open To-do List →</a>
-        </div>
         <div class="modal-actions"><button class="btn btn-ghost" data-action="close-modal">Close</button></div>
       </div>
     </div>`;
   }
-  if(md.type==='galleryPhoto'){
-    const ph=findGalleryPhoto(md.albumId,md.photoId);
-    const al=findGalleryAlbum(md.albumId);
-    if(!ph||!al){ ui.modal=null; return ''; }
-    return `<div class="overlay" data-action="close-modal">
-      <div class="modal modal-lg" onclick="event.stopPropagation()">
-        <div class="panel-title"><div>${esc(ph.name)}</div><button class="icon-btn" data-action="close-modal">✕</button></div>
-        <div class="gallery-photo-layout">
-          <div class="gallery-photo-view"><img data-gallery-modal-key="${ph.blobKey}" alt="${esc(ph.name)}"></div>
-          <div>
-            <div class="sticky-note">
-              <div class="small-cap" style="color:#6E5921;">My Note</div>
-              <textarea id="galleryNoteInput" data-bind="gallery.note::${albumId}::${photoId}" placeholder="Write a memory, location, people, story…">${esc(ph.note)}</textarea>
-            </div>
-            <button class="btn btn-primary mt12" data-action="gallery-save-note" data-id="${al.id}" data-id2="${ph.id}">Save Note ✓</button>
-            <button class="btn btn-danger mt8" data-action="gallery-delete-photo" data-id="${al.id}" data-id2="${ph.id}">Delete Photo</button>
-          </div>
-        </div>
-      </div>
-    </div>`;
-  }
   if(md.type==='quickadd'){
-    const kinds = [['task','Task'],['goal','Learning Goal'],['idea','Video Idea'],['recipe','Recipe'],['trip','Trip'],['event','Calendar Event'],['note','Note']];
+    const kinds = [['task','To-Do'],['goal','Learning Goal'],['idea','Video Idea'],['recipe','Recipe'],['trip','Trip'],['event','Calendar'],['note','Note']];
     return `<div class="overlay" data-action="close-modal">
       <div class="modal" onclick="event.stopPropagation()">
         <h3>Quick Add</h3>
