@@ -1847,7 +1847,7 @@ function renderMood(){
     <div class="panel">
       <div class="panel-title">Journal Book</div>
       ${journals.length===0?`<div class="empty-state" style="padding:24px;"><div class="msg" style="font-size:14px;">Your saved journal entries will live here.</div></div>`:
-      journals.map(j=>`<div class="item-row"><div class="txt"><b>${j.title?esc(j.title):'Untitled Journal'}</b><div class="fine">${fmtDate(j.date)}${j.content?' · '+esc(j.content.slice(0,70)):''}</div></div></div>`).join('')}
+      journals.map(j=>`<div class="item-row"><div class="txt"><b>${j.title?esc(j.title):'Untitled Journal'}</b><div class="fine">${fmtDate(j.date)}</div></div></div>`).join('')}
     </div>
   </div>
   `;
