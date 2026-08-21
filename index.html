@@ -1463,9 +1463,9 @@ function renderDashboard(){
   const dailyReminders = [
     { done:!!(todaysMood&&todaysMood.mood), icon:'🐱', label:'記錄今日心情', href:'#/mood' },
     { done:!!todaysJournal, icon:'📝', label:'寫今日日記', href:'#/mood' },
-    { done:todaysTasks.length===0, icon:'✅', label: todaysTasks.length? `完成今日 To-do（剩 ${todaysTasks.length}）` : '今日 To-do 已清空', href:'#/calendar' },
-    { done:weekItemsToday.length===0, icon:'📋', label: weekItemsToday.length? `本週今日項目（剩 ${weekItemsToday.length}）` : '本週今日項目已完成', href:'#/weekly' },
-    { done:activeYt.length===0, icon:'🎬', label: activeYt.length? `推進 YouTube（${activeYt.length} 進行中）` : 'YouTube 暫無進行中', href:'#/youtube' },
+    { done:todaysTasks.length===0, icon:'✅', label: todaysTasks.length? `完成今日 To-do（剩 ${todaysTasks.length}）` : '今日 To-do ', href:'#/calendar' },
+    { done:weekItemsToday.length===0, icon:'📋', label: weekItemsToday.length? `本週今日項目（剩 ${weekItemsToday.length}）` : '本週今日項目', href:'#/weekly' },
+    { done:activeYt.length===0, icon:'🎬', label: activeYt.length? `推進 YouTube（${activeYt.length} ）` : 'YouTube', href:'#/youtube' },
   ];
   const monthlyReminders = [
     { done:monthHasReview, icon:'🌙', label: monthHasReview? '本月 Review 已填' : '填寫 Monthly Review + 評分', href:`#/review/${ym}` },
