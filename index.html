@@ -1468,8 +1468,8 @@ function renderDashboard(){
     { done:activeYt.length===0, icon:'🎬', label: activeYt.length? `推進 YouTube（${activeYt.length} ）` : 'YouTube', href:'#/youtube' },
   ];
   const monthlyReminders = [
-    { done:monthHasReview, icon:'🌙', label: monthHasReview? '本月 Review 已填' : '填寫 Monthly Review + 評分', href:`#/review/${ym}` },
-    { done:monthHasFav, icon:'✨', label: monthHasFav? '本月 Fav 已存' : '儲存 Monthly Fav', href:`#/review/${ym}` },
+    { done:monthHasReview, icon:'🌙', label: monthHasReview? '本月 ' : '填寫 Monthly Review + 評分', href:`#/review/${ym}` },
+    { done:monthHasFav, icon:'✨', label: monthHasFav? '本月 Fav ' : '儲存 Monthly Fav', href:`#/review/${ym}` },
     { done:db.learningGoals.length>0 && learningAvg!==null && learningAvg>0, icon:'📖', label:'檢查 Learning 進度', href:'#/learning' },
     { done:!isMonthEndSoon, icon:'🍵', label: isMonthEndSoon? '月底將近 · 收斂本月筆記' : '平時慢慢累積 Review', href:`#/review/${ym}` },
   ];
